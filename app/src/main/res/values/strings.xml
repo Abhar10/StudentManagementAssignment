@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Student Management System</string>
+    <string name="msg">No Student Added Currently !</string>
+    <string name="btn_add_student">Add Student</string>
+    <string name="second_activity_title">Add Student</string>
+    <string name="input_name">Name</string>
+    <string name="input_roll_no">Roll Number</string>
+    <string name="save">Save</string>
+    <string name="save_changes_button">Save Changes</string>
+    <string name="edit_string">Edit</string>
+    <string name="view_string">View</string>
+    <string name="Button">Button</string>
+    <string name="delete_entry">Delete Entry</string>
+    <string name="delete_warning">Are You Sure You Want To Delete This Entry ?</string>
+</resources>
