@@ -1,7 +1,6 @@
-package Adapter;
+package adapter;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +11,7 @@ import com.abhar.sms.R;
 import java.util.ArrayList;
 import java.util.List;
 
-import Model.Student;
-
-import static android.content.ContentValues.TAG;
+import model.Student;
 
 /**
  * This class extends the abstract class Adapter. This class helps in coverting a listview
@@ -84,12 +81,6 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.MyViewHo
         }
     }
 
-    /**
-     * Method to return the created view holder
-     * @param parent To get the context of the parent view group
-     * @param viewType To define the view type of the viewholder
-     * @return created view holder
-     */
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
@@ -99,11 +90,6 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.MyViewHo
         return new MyViewHolder(itemView);
     }
 
-    /**
-     * Method to bind data to the View Holder
-     * @param myViewHolder instance of ViewHolder
-     * @param i position of the view holder to be binded
-     * */
     @Override
     public void onBindViewHolder(MyViewHolder myViewHolder, int i) {
         Student text = StudentList.get(i);
@@ -112,9 +98,6 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.MyViewHo
         myViewHolder.id.setText(text.getStudentId());
     }
 
-    /**
-     * Method to return the number of items in the list
-     */
     @Override
     public int getItemCount() {
         int size = StudentList.size();

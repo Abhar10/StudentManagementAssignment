@@ -1,4 +1,4 @@
-package Activity;
+package activity;
 
 import android.content.DialogInterface;
 import android.support.v4.content.ContextCompat;
@@ -17,14 +17,14 @@ import android.content.Intent;
 import android.widget.LinearLayout;
 
 import com.abhar.sms.R;
-import Comparator.sortByIdComparator;
-import Comparator.sortByNameComparator;
+import comparator.sortByIdComparator;
+import comparator.sortByNameComparator;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
-import Adapter.StudentAdapter;
-import Model.Student;
+import adapter.StudentAdapter;
+import model.Student;
 
 /**
  * The MainActivity class implements an application that initially has no students
@@ -44,10 +44,6 @@ public class MainActivity extends AppCompatActivity {
     private final int EDIT=1;
     private final int DELETE=2;
 
-    /**
-     * Method to create a new activity
-     * @param savedInstanceState creates the activity in the previous left state
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,49 +51,30 @@ public class MainActivity extends AppCompatActivity {
         Button btnAddStudent = (Button) findViewById(R.id.btn_add_student);
         mStudentView = (LinearLayout) findViewById(R.id.ll_image_text);
 
-        mAdapter = new StudentAdapter(list);
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(grid);
+        createRecyclerView();
 
-        recyclerView.addItemDecoration(new DividerItemDecoration(
-                MainActivity.this, GridLayoutManager.VERTICAL));
-
-        recyclerView.addItemDecoration(new DividerItemDecoration(
-                MainActivity.this, GridLayoutManager.HORIZONTAL));
-
-        recyclerView.setAdapter(mAdapter);
         mAdapter.setOnClickListener(new StudentAdapter.RecyclerViewClickListener() {
-            /**
-             * Method to open a dialog box on click for edit,view,delete
-             * @param position the position of the list which is clicked
-             */
+
             @Override
             public void onClick(final int position) {
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                            builder.setTitle("Choose One Option");
-                            String[] choice = {"View", "Edit", "Delete"};
+                            builder.setTitle(R.string.chooseOptionText);
+                            String[] choice = {getString(R.string.viewText), getString(R.string.editText),
+                                    getString(R.string.deleteText)};
                             builder.setItems(choice, new DialogInterface.OnClickListener() {
-                                /**
-                                 * Function to check which option selected among edit,view,delete
-                                 * @param dialog To create dialog interface
-                                 * @param which To know which option of the dialog box selected
-                                 */
 
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     switch (which) {
-                                        //Case for View
                                         case VIEW:
                                             viewStudent(position);
                                             break;
 
-                                        //Case for Edit
                                         case EDIT:
                                             editStudent(position);
                                             break;
 
-                                        //Case for Delete
                                         case DELETE:
                                             deleteStudent(position);
                                             break;
@@ -112,23 +89,16 @@ public class MainActivity extends AppCompatActivity {
 
 
         btnAddStudent.setOnClickListener(new View.OnClickListener() {
-            /**
-             * Function to ask for result from AddStudentActivity
-             * @param v instance of View
-             */
+
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, AddStudentActivity.class);
+
                 startActivityForResult(intent, REQUEST_CODE_ADD);
             }
         });
 }
 
-    /**
-     * To create menu
-     * @param menu Instace of Menu
-     * @return true when menu created
-     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
@@ -139,23 +109,16 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    /**
-     * Function to change List View to Grid View and vice versa
-     * @param item Menu Item which is selected
-     * @return true when any of the option of the menu option clicked
-     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
 
         switch (item.getItemId())
         {
-            //Case when user clicks the grid layout icon
             case R.id.menu_grid_layout:
                 LinearToGridToLinear();
                 return true;
 
-                //If user selects sort by name submenu
             case R.id.menu_submenu_sort_by_name:
 
 
@@ -163,7 +126,6 @@ public class MainActivity extends AppCompatActivity {
                 mAdapter.notifyDataSetChanged();
                 return true;
 
-                //If user selects Sort by ID submenu
             case R.id.menu_submenu_sort_by_id:
 
                 Collections.sort(list, new sortByIdComparator());
@@ -175,18 +137,11 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-    /**
-     * Method to recieve the results from AddStudentActivity
-     * @param requestCode To know for which intent request we are getting the result
-     * @param resultCode To know if successfully got a result from AddStudentActivity
-     * @param data The data we get from the AddStudentActivity
-     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         super.onActivityResult(requestCode, resultCode, data);
-        //If results recieved for add intent
+
         if (requestCode == REQUEST_CODE_ADD) {
             {
                 if (resultCode == RESULT_OK) {
@@ -203,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-        //If results recieved for Edit intent
+
         else if(requestCode == REQUEST_CODE_EDIT)
         {
             if(resultCode == RESULT_OK)
@@ -243,19 +198,18 @@ public class MainActivity extends AppCompatActivity {
         Intent intentView = new Intent(
                 MainActivity.this, AddStudentActivity.class);
 
-        intentView.putExtra("Mode", "View");
-        intentView.putExtra(
-                "Name", list.get(position).getStudentName());
+        intentView.putExtra("Mode","View");
+        intentView.putExtra
+                ("Name", list.get(position).getStudentName());
 
-        intentView.putExtra(
-                "ID", list.get(position).getStudentId());
+        intentView.putExtra("ID", list.get(position).getStudentId());
 
         startActivity(intentView);
     }
 
     /**
      * Method to Edit Student which is clicked.
-     * @param position
+     * @param position specifies the position
      */
     public void editStudent(final int position)
     {
@@ -263,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intentEdit = new Intent(
                 MainActivity.this, AddStudentActivity.class);
 
-        intentEdit.putExtra("Mode", "Edit");
+        intentEdit.putExtra("Mode","Edit");
         intentEdit.putExtra
                 ("Name", list.get(position).getStudentName());
 
@@ -313,4 +267,23 @@ public class MainActivity extends AppCompatActivity {
             grid.setSpanCount(2);
         }
     }
+
+    /**
+     * Method to create RecyclerView
+     */
+    public void createRecyclerView()
+    {
+        mAdapter = new StudentAdapter(list);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        recyclerView.setLayoutManager(grid);
+
+        recyclerView.addItemDecoration(new DividerItemDecoration(
+                MainActivity.this, GridLayoutManager.VERTICAL));
+
+        recyclerView.addItemDecoration(new DividerItemDecoration(
+                MainActivity.this, GridLayoutManager.HORIZONTAL));
+
+        recyclerView.setAdapter(mAdapter);
+    }
+
 }

@@ -1,4 +1,4 @@
-package Validate;
+package validate;
 
 public class validateId {
     /**

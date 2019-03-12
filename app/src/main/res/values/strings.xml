@@ -12,4 +12,13 @@
     <string name="Button">Button</string>
     <string name="delete_entry">Delete Entry</string>
     <string name="delete_warning">Are You Sure You Want To Delete This Entry ?</string>
+    <string name="chooseOptionText">Choose One Option</string>
+    <string name="viewText">View</string>
+    <string name="editText">Edit</string>
+    <string name="deleteText">Delete</string>
+    <string name="validNameWarning">Enter a Valid Name</string>
+    <string name="validIdWarning">Enter an ID</string>
+    <string name="valid_name_error">Enter a Valid Name</string>
+    <string name="valid_id_error">Enter an ID</string>
+    <string name="error_msg">Enter Valid Name</string>
 </resources>

@@ -1,8 +1,8 @@
-package Comparator;
+package comparator;
 
 import java.util.Comparator;
 
-import Model.Student;
+import model.Student;
 
 /**
  * class sortByIdComparator implements the interface Comparator and helps in sorting the

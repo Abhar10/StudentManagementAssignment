@@ -1,4 +1,4 @@
-package Model;
+package model;
 
 /**
  * The class Student is the model and helps in setting Roll number and name of student
@@ -41,4 +41,3 @@ public class Student {
     }
 
 }
-

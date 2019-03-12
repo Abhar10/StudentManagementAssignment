@@ -1,21 +1,16 @@
-package Activity;
+package activity;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.text.TextWatcher;
 import android.text.Editable;
-
 import com.abhar.sms.R;
-
-import javax.xml.validation.Validator;
-
-import Validate.validateId;
-import Validate.validateName;
+import validate.validateId;
+import validate.validateName;
 
 /**
  * This class helps in performing several actions such as adding a new student,
@@ -27,10 +22,6 @@ public class AddStudentActivity extends AppCompatActivity {
     private EditText mEtRollNumber;
     private Button mBtnSaveChange;
 
-    /**
-     * Overriden method to create a new Activity AddStudentActivity
-     * @param savedInstanceState The previous state in which the activity was.
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,13 +29,10 @@ public class AddStudentActivity extends AppCompatActivity {
         setTitle(R.string.second_activity_title);
 
         mEtName = (EditText)findViewById(R.id.et_user_name);
-
         mEtRollNumber = (EditText)findViewById(R.id.et_user_roll_no);
-
         String Mode = (String)getIntent().getStringExtra("Mode");
         mBtnSaveChange = (Button)findViewById(R.id.btn_save_changes);
 
-        //For checking validation while user types the name
         mEtName.addTextChangedListener(new TextWatcher()  {
 
             @Override
@@ -55,52 +43,27 @@ public class AddStudentActivity extends AppCompatActivity {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
 
-            /**
-             * This method checks the validation in name while user is typing the name
-             * @param s The EditText text currently typed
-             */
             @Override
             public void afterTextChanged(Editable s)
             {
-                if (! validateName.isvalidUserName(mEtName.getText().toString())) {
-                    mEtName.setError("Enter a Valid Name");
-                    mBtnSaveChange.setEnabled(false);
-                }
-                else
-                    {
-                    mEtName.setError(null);
-                    mBtnSaveChange.setEnabled(true);
-                }
+                afterTextChangedValidation();
             }
         });
 
-        //Checks if mode is equal to View
         if(Mode != null && Mode.equals("View"))
         {
             onViewStudent();
         }
 
-        //Checks if mode is equal to Edit
         else if(Mode != null && Mode.equals("Edit"))
         {
             onEditStudent();
         }
 
-        //When default mode add student selected
-        else
+        else if(Mode == null)
         {
-        mBtnSaveChange.setOnClickListener(new View.OnClickListener() {
-
-            /**
-             * Method to validate name and Roll Number when SaveChange button clicked
-             * @param v instance of View
-             */
-            @Override
-            public void onClick(View v)
-            {
-                validateNameAndId();
-        }}
-    );}
+            validateNameAndId();
+        }
     }
 
     /**
@@ -109,25 +72,25 @@ public class AddStudentActivity extends AppCompatActivity {
      */
     public void validateNameAndId()
     {
-        //If User has entered a blank name or has entered only white spaces.
-        if(validateName.isEmptyName(mEtName.getText().toString()))
-        {
-            mEtName.setError("Enter a Valid Name");
-        }
-        //If User has entered a blank ID
-        if(validateId.isEmptyId(mEtRollNumber.getText().toString())) {
-            mEtRollNumber.setError("Enter an ID");
-        }
-        //If both Name and ID consists of Valid characters
-        else if(! validateName.isEmptyName(mEtRollNumber.getText().toString()) &&
-                ! validateId.isEmptyId(mEtRollNumber.getText().toString()))
-        {
-            Intent intent = new Intent();
-            intent.putExtra("key_name", mEtName.getText().toString());
-            intent.putExtra("key_id", mEtRollNumber.getText().toString());
-            setResult(RESULT_OK, intent);
-            finish();
-        }
+        mBtnSaveChange.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v)
+            {
+                if(validateName.isEmptyName(mEtName.getText().toString()))
+                {
+                    mEtName.setError(getString(R.string.valid_name_error));
+                }
+                if(validateId.isEmptyId(mEtRollNumber.getText().toString())) {
+                    mEtRollNumber.setError(getString(R.string.valid_id_error));
+                }
+                else if(! validateName.isEmptyName(mEtRollNumber.getText().toString()) &&
+                        ! validateId.isEmptyId(mEtRollNumber.getText().toString()))
+                {
+                    createIntent();
+                }}}
+            );
+
     }
 
     /**
@@ -153,18 +116,34 @@ public class AddStudentActivity extends AppCompatActivity {
         mEtRollNumber.setText(getIntent().getStringExtra("ID"));
         mBtnSaveChange.setText(getString(R.string.save_changes_button));
 
-        mBtnSaveChange.setOnClickListener(new View.OnClickListener() {
-
-            /**Method to check whether user has not entered a empty name or ID or
-             * has entered only white spaces.
-             * @param v Istance of View
-             */
-            @Override
-            public void onClick(View v)
-            {
-                validateNameAndId();
-            }});
+        validateNameAndId();
     }
 
-}
+    /**
+     * Method to check whether Entered Name and ID are valid
+     */
+    public void afterTextChangedValidation()
+    {
+        if (! validateName.isvalidUserName(mEtName.getText().toString())) {
+            mEtName.setError(getString(R.string.error_msg));
+            mBtnSaveChange.setEnabled(false);
+        }
+        else
+        {
+            mEtName.setError(null);
+            mBtnSaveChange.setEnabled(true);
+        }
+    }
 
+    /**
+     * Method to create Intent
+     */
+    public void createIntent()
+    {
+        Intent intent = new Intent();
+        intent.putExtra("key_name", mEtName.getText().toString());
+        intent.putExtra("key_id", mEtRollNumber.getText().toString());
+        setResult(RESULT_OK, intent);
+        finish();
+    }
+}
