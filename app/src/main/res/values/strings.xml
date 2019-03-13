@@ -21,4 +21,7 @@
     <string name="valid_name_error">Enter a Valid Name</string>
     <string name="valid_id_error">Enter an ID</string>
     <string name="error_msg">Enter Valid Name</string>
+    <string name="grid_text">Grid</string>
+    <string name="sort_by_name">Sort by Name</string>
+    <string name="sort_by_id">Sort by ID</string>
 </resources>

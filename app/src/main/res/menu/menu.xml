@@ -5,7 +5,7 @@
 
     <item android:id="@+id/menu_grid_layout"
         android:icon="@drawable/grid_image"
-        android:title="Grid"
+        android:title="@string/grid_text"
         app:showAsAction="ifRoom"/>
 
     <item
@@ -16,11 +16,11 @@
             <item
                 android:id="@+id/menu_submenu_sort_by_name"
                 android:icon="@drawable/ic_sort_by_alphabet_image"
-                android:title="Sort by Name" />
+                android:title="@string/sort_by_name" />
             <item
                 android:icon="@drawable/sort_by_number"
                 android:id="@+id/menu_submenu_sort_by_id"
-                android:title="Sort by ID" />
+                android:title="@string/sort_by_id" />
         </menu>
     </item>
 

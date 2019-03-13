@@ -17,7 +17,7 @@ import model.Student;
  * This class extends the abstract class Adapter. This class helps in coverting a listview
  * to a recycler view.
  */
-public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.MyViewHolder>
+public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.studentViewHolder>
 {
     List<Student> StudentList;
     private RecyclerViewClickListener mListener;
@@ -49,29 +49,26 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.MyViewHo
     /**
      * Inner class of RecyclerView for view holder
      */
-    public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView name, id;
+    public class studentViewHolder extends RecyclerView.ViewHolder {
+        public TextView tvName, tvId;
 
         /**
          * Constructor to initialize view of view holder
          * @param view instance of View
          */
-        public MyViewHolder(View view) {
+        public studentViewHolder(View view) {
             super(view);
-            name = (TextView) view.findViewById(R.id.tv_name);
-            id = (TextView) view.findViewById(R.id.tv_roll_no);
+            tvName = view.findViewById(R.id.tv_name);
+            tvId = view.findViewById(R.id.tv_roll_no);
 
             view.setOnClickListener(new View.OnClickListener() {
-                /**
-                 * Method to get the position of the clicked view holder
-                 * @param v instance of view
-                 */
+
                 @Override
                 public void onClick(View v) {
-                    //To know which position viewholder clicked
+
                     if(mListener!=null){
                         int position=getAdapterPosition();
-                        //If none of the view holder clicked
+
                         if(position!=RecyclerView.NO_POSITION){
                             mListener.onClick(position);
                         }
@@ -82,20 +79,20 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.MyViewHo
     }
 
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public studentViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.row_layout, parent, false);
 
-        return new MyViewHolder(itemView);
+        return new studentViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder myViewHolder, int i) {
+    public void onBindViewHolder(studentViewHolder myViewHolder, int i) {
         Student text = StudentList.get(i);
 
-        myViewHolder.name.setText(text.getStudentName());
-        myViewHolder.id.setText(text.getStudentId());
+        myViewHolder.tvName.setText(text.getStudentName());
+        myViewHolder.tvId.setText(text.getStudentId());
     }
 
     @Override

@@ -28,49 +28,16 @@ public class AddStudentActivity extends AppCompatActivity {
         setContentView(R.layout.activity_student_add);
         setTitle(R.string.second_activity_title);
 
-        mEtName = (EditText)findViewById(R.id.et_user_name);
-        mEtRollNumber = (EditText)findViewById(R.id.et_user_roll_no);
-        String Mode = (String)getIntent().getStringExtra("Mode");
-        mBtnSaveChange = (Button)findViewById(R.id.btn_save_changes);
-
-        mEtName.addTextChangedListener(new TextWatcher()  {
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s)
-            {
-                afterTextChangedValidation();
-            }
-        });
-
-        if(Mode != null && Mode.equals("View"))
-        {
-            onViewStudent();
-        }
-
-        else if(Mode != null && Mode.equals("Edit"))
-        {
-            onEditStudent();
-        }
-
-        else if(Mode == null)
-        {
-            validateNameAndId();
-        }
+        initialize();
+        String Mode = getIntent().getStringExtra("Mode");
+        createTextWatcher(mEtName,Mode);
     }
 
     /**
      * Method to check whether entered name and ID are not empty and
      * do not consists of only white spaces.
      */
-    public void validateNameAndId()
+    private void validateNameAndId()
     {
         mBtnSaveChange.setOnClickListener(new View.OnClickListener() {
 
@@ -96,7 +63,7 @@ public class AddStudentActivity extends AppCompatActivity {
     /**
      * Method when main activity requests for Viewing a student
      */
-    public void onViewStudent()
+    private void onViewStudent()
     {
         setTitle(R.string.view_string);
         mEtName.setText(getIntent().getStringExtra("Name"));
@@ -109,7 +76,7 @@ public class AddStudentActivity extends AppCompatActivity {
     /**
      * Method to Edit a student when user requests for it
      */
-    public void onEditStudent()
+    private void onEditStudent()
     {
         setTitle(R.string.edit_string);
         mEtName.setText(getIntent().getStringExtra("Name"));
@@ -122,7 +89,7 @@ public class AddStudentActivity extends AppCompatActivity {
     /**
      * Method to check whether Entered Name and ID are valid
      */
-    public void afterTextChangedValidation()
+    private void afterTextChangedValidation()
     {
         if (! validateName.isvalidUserName(mEtName.getText().toString())) {
             mEtName.setError(getString(R.string.error_msg));
@@ -138,7 +105,7 @@ public class AddStudentActivity extends AppCompatActivity {
     /**
      * Method to create Intent
      */
-    public void createIntent()
+    private void createIntent()
     {
         Intent intent = new Intent();
         intent.putExtra("key_name", mEtName.getText().toString());
@@ -146,4 +113,56 @@ public class AddStudentActivity extends AppCompatActivity {
         setResult(RESULT_OK, intent);
         finish();
     }
-}
+
+    /**
+     * Initialize variables
+     */
+    private void initialize()
+    {
+        mEtName = findViewById(R.id.et_user_name);
+        mEtRollNumber = findViewById(R.id.et_user_roll_no);
+        mBtnSaveChange = findViewById(R.id.btn_save_changes);
+    }
+
+    /**
+     * Method to check whether user is typing valid text
+     * @param mEtName EditText for Name
+     * @param Mode String for Mode(Edit,View,Delete,Default)
+     */
+    private void createTextWatcher(EditText mEtName, String Mode)
+    {
+            mEtName.addTextChangedListener(new TextWatcher()  {
+
+                @Override
+                public void onTextChanged(CharSequence s, int start, int before, int count) {
+                }
+
+                @Override
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                }
+
+                @Override
+                public void afterTextChanged(Editable s)
+                {
+                    afterTextChangedValidation();
+                }
+            });
+
+        if(Mode != null && Mode.equals("View"))
+        {
+            onViewStudent();
+        }
+
+        else if(Mode != null && Mode.equals("Edit"))
+        {
+            onEditStudent();
+        }
+
+        else if(Mode == null)
+        {
+            validateNameAndId();
+        }
+    }
+
+    }
+

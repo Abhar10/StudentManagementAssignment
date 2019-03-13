@@ -34,57 +34,62 @@ public class MainActivity extends AppCompatActivity {
 
     public static final int REQUEST_CODE_ADD = 1;
     public static final int REQUEST_CODE_EDIT = 2;
-    ArrayList<Student> list = new ArrayList<Student>();
-    final GridLayoutManager grid = new GridLayoutManager(this,1);
+    private final int VIEW = 0;
+    private final int EDIT = 1;
+    private final int DELETE = 2;
+    private ArrayList<Student> list = new ArrayList<Student>();
+    final GridLayoutManager grid = new GridLayoutManager(this, 1);
     private StudentAdapter mAdapter;
     private int mTempPosition;
     private Menu menu;
     private LinearLayout mStudentView;
-    private final int VIEW=0;
-    private final int EDIT=1;
-    private final int DELETE=2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Button btnAddStudent = (Button) findViewById(R.id.btn_add_student);
-        mStudentView = (LinearLayout) findViewById(R.id.ll_image_text);
+        Button btnAddStudent = findViewById(R.id.btn_add_student);
+        mStudentView = findViewById(R.id.ll_image_text);
 
         createRecyclerView();
 
         mAdapter.setOnClickListener(new StudentAdapter.RecyclerViewClickListener() {
 
-            @Override
-            public void onClick(final int position) {
+                                        @Override
+                                        public void onClick(final int position) {
 
-                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                            builder.setTitle(R.string.chooseOptionText);
-                            String[] choice = {getString(R.string.viewText), getString(R.string.editText),
-                                    getString(R.string.deleteText)};
-                            builder.setItems(choice, new DialogInterface.OnClickListener() {
+                                            AlertDialog.Builder builder = new AlertDialog.Builder
+                                                    (MainActivity.this);
+                                            builder.setTitle(R.string.chooseOptionText);
+                                            String[] choice = {getString(R.string.viewText),
+                                                    getString(R.string.editText),
+                                                    getString(R.string.deleteText)};
+                                            builder.setItems(choice, new DialogInterface.OnClickListener() {
 
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    switch (which) {
-                                        case VIEW:
-                                            viewStudent(position);
-                                            break;
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    switch (which) {
+                                                        case VIEW:
+                                                            viewStudent(position);
+                                                            break;
 
-                                        case EDIT:
-                                            editStudent(position);
-                                            break;
+                                                        case EDIT:
+                                                            editStudent(position);
+                                                            break;
 
-                                        case DELETE:
-                                            deleteStudent(position);
-                                            break;
+                                                        case DELETE:
+                                                            deleteStudent(position);
+                                                            break;
+
+                                                        default:
+                                                            break;
+                                                    }
+                                                }
+                                            });
+                                            AlertDialog dialog = builder.create();
+                                            dialog.show();
+                                        }
                                     }
-                                }
-                            });
-                            AlertDialog dialog = builder.create();
-                            dialog.show();
-                }
-            }
         );
 
 
@@ -93,41 +98,33 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, AddStudentActivity.class);
-
                 startActivityForResult(intent, REQUEST_CODE_ADD);
             }
         });
-}
+    }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
+    public boolean onCreateOptionsMenu(Menu menu) {
         this.menu = menu;
         MenuInflater menuInflater = getMenuInflater();
         menuInflater.inflate(R.menu.menu, menu);
-
         return true;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
+    public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId())
-        {
+        switch (item.getItemId()) {
             case R.id.menu_grid_layout:
                 LinearToGridToLinear();
                 return true;
 
             case R.id.menu_submenu_sort_by_name:
-
-
                 Collections.sort(list, new sortByNameComparator());
                 mAdapter.notifyDataSetChanged();
                 return true;
 
             case R.id.menu_submenu_sort_by_id:
-
                 Collections.sort(list, new sortByIdComparator());
                 mAdapter.notifyDataSetChanged();
                 return true;
@@ -153,19 +150,12 @@ public class MainActivity extends AppCompatActivity {
                     mAdapter.notifyDataSetChanged();
 
                 }
-                else if (resultCode == RESULT_CANCELED) {
-                    //whatever
-                }
             }
-        }
-
-        else if(requestCode == REQUEST_CODE_EDIT)
-        {
-            if(resultCode == RESULT_OK)
-            {
+        } else if (requestCode == REQUEST_CODE_EDIT) {
+            if (resultCode == RESULT_OK) {
                 String name = data.getStringExtra("key_name");
                 String id = data.getStringExtra("key_id");
-                list.set(getPosition(),new Student(name, id));
+                list.set(getPosition(), new Student(name, id));
                 mAdapter.notifyDataSetChanged();
             }
         }
@@ -173,64 +163,46 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * This function sets the position of the item to be edited
+     *
      * @param position sets the position
      */
-    public void setPosition(int position)
-    {
+    private void setPosition(int position) {
         mTempPosition = position;
     }
 
     /**
      * This function returns the position of item to be edited
+     *
      * @return mTempPosition returns the position which is to be edited
      */
-    public int getPosition()
-    {
+    private int getPosition() {
         return mTempPosition;
     }
 
     /**
      * Method to view the clicked student details
+     *
      * @param position specifies which position of the list is clicked
      */
-    public void viewStudent(final int position)
-    {
-        Intent intentView = new Intent(
-                MainActivity.this, AddStudentActivity.class);
-
-        intentView.putExtra("Mode","View");
-        intentView.putExtra
-                ("Name", list.get(position).getStudentName());
-
-        intentView.putExtra("ID", list.get(position).getStudentId());
-
-        startActivity(intentView);
+    private void viewStudent(final int position) {
+        createViewIntent(position);
     }
 
     /**
      * Method to Edit Student which is clicked.
+     *
      * @param position specifies the position
      */
-    public void editStudent(final int position)
-    {
-        setPosition(position);
-        Intent intentEdit = new Intent(
-                MainActivity.this, AddStudentActivity.class);
-
-        intentEdit.putExtra("Mode","Edit");
-        intentEdit.putExtra
-                ("Name", list.get(position).getStudentName());
-
-        intentEdit.putExtra("ID", list.get(position).getStudentId());
-        startActivityForResult(intentEdit, REQUEST_CODE_EDIT);
+    private void editStudent(final int position) {
+        createEditIntent(position);
     }
 
     /**
      * Method to delete clicked student.
+     *
      * @param position specifies the clicked student
      */
-    public void deleteStudent(final int position)
-    {
+    private void deleteStudent(final int position) {
         new AlertDialog.Builder(MainActivity.this)
                 .setTitle(R.string.delete_entry)
                 .setMessage(R.string.delete_warning)
@@ -239,8 +211,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         list.remove(position);
                         mAdapter.notifyDataSetChanged();
-                        if(list.isEmpty())
-                        {
+                        if (list.isEmpty()) {
                             mStudentView.setVisibility(View.VISIBLE);
                         }
                     }
@@ -252,18 +223,15 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Method to convert List from Linear to Grid and from Grid to Linear
      */
-    public void LinearToGridToLinear()
-    {
-        //If spancount is equal to 2 change it to linear
-        if(grid.getSpanCount() == 2)
-        {
-            menu.findItem(R.id.menu_grid_layout).setIcon(ContextCompat.getDrawable(this, R.drawable.grid_image));
+    private void LinearToGridToLinear() {
+
+        if (grid.getSpanCount() == 2) {
+            menu.findItem(R.id.menu_grid_layout).setIcon(ContextCompat.getDrawable(this,
+                    R.drawable.grid_image));
             grid.setSpanCount(1);
-        }
-        //If spancount is equal to 1 change it to grid
-        else
-        {
-            menu.findItem(R.id.menu_grid_layout).setIcon(ContextCompat.getDrawable(this, R.drawable.list_view_image));
+        } else {
+            menu.findItem(R.id.menu_grid_layout).setIcon(ContextCompat.getDrawable(this,
+                    R.drawable.list_view_image));
             grid.setSpanCount(2);
         }
     }
@@ -271,10 +239,9 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Method to create RecyclerView
      */
-    public void createRecyclerView()
-    {
+    private void createRecyclerView() {
         mAdapter = new StudentAdapter(list);
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(grid);
 
         recyclerView.addItemDecoration(new DividerItemDecoration(
@@ -286,4 +253,39 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(mAdapter);
     }
 
+    /**
+     * Method to create Intent for viewing
+     * @param position Position clicked
+     */
+    private void createViewIntent(int position) {
+        Intent intentView = new Intent(
+                MainActivity.this, AddStudentActivity.class);
+
+        intentView.putExtra("Mode", "View");
+        intentView.putExtra
+                ("Name", list.get(position).getStudentName());
+
+        intentView.putExtra("ID", list.get(position).getStudentId());
+
+        startActivity(intentView);
+    }
+
+    /**
+     * Method to create Intent for Edit
+     * @param position Position clicked
+     */
+    private void createEditIntent(int position) {
+        setPosition(position);
+        Intent intentEdit = new Intent(
+                MainActivity.this, AddStudentActivity.class);
+
+        intentEdit.putExtra("Mode", "Edit");
+        intentEdit.putExtra
+                ("Name", list.get(position).getStudentName());
+
+        intentEdit.putExtra("ID", list.get(position).getStudentId());
+        startActivityForResult(intentEdit, REQUEST_CODE_EDIT);
+    }
 }
+
+
