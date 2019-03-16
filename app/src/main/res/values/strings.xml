@@ -24,4 +24,8 @@
     <string name="grid_text">Grid</string>
     <string name="sort_by_name">Sort by Name</string>
     <string name="sort_by_id">Sort by ID</string>
+    <string name="async_task">Async Task</string>
+    <string name="service">Service</string>
+    <string name="intent_service">Intent Service</string>
+    <string name="service_msg">Intent Service Running</string>
 </resources>

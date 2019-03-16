@@ -9,14 +9,25 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="activity.AddStudentActivity"></activity>
+        <service
+            android:name=".BackgroundIntent"
+            android:exported="false"></service>
+        <service
+            android:name=".IntentService"
+            android:exported="false" />
+        <service
+            android:name=".BackgroundService"
+            android:enabled="true"
+            android:exported="false" />
+
+
+        <activity android:name="activity.AddStudentActivity" />
         <activity android:name="activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
     </application>
 

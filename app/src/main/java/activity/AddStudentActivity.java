@@ -1,6 +1,8 @@
 package activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,12 +11,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.text.TextWatcher;
 import android.text.Editable;
-import com.abhar.sms.R;
 
+import com.abhar.sms.BackgroundService;
+import com.abhar.sms.R;
+import constant.Constant;
 
 import async.BackProcess;
 
 
+import intentservice.BackgroundIntent;
 import validate.validateId;
 import validate.validateName;
 
@@ -65,16 +70,12 @@ public class AddStudentActivity extends AppCompatActivity implements BackProcess
                     int roll = Integer.parseInt(mEtRollNumber.getText().toString());
                     String name = mEtName.getText().toString();
 
-                    BackProcess backProcess=new BackProcess(AddStudentActivity.this,
-                            AddStudentActivity.this);
-                    //DatabaseHelper db = DatabaseHelper.getInstance(AddStudentActivity.this);
-                    //String[] arr={"add_info",String.valueOf(roll),name};
-                    backProcess.execute("add_info",String.valueOf(roll),name);
-
                     Log.i("abc",String.valueOf(roll));
                     createIntent((long)roll);
+                    generateDialog("add_info",String.valueOf(roll),name," ");
 
-                    finish();
+
+
                 }}}
         );
 
@@ -102,7 +103,7 @@ public class AddStudentActivity extends AppCompatActivity implements BackProcess
         mEtName.setText(getIntent().getStringExtra("Name"));
         mEtRollNumber.setText(String.valueOf(getIntent().getIntExtra("ID",0)));
         mBtnSaveChange.setText(getString(R.string.save_changes_button));
-        final String oldName = getIntent().getStringExtra("Name");
+       // final String oldName = getIntent().getStringExtra("Name");
         final int oldRollNum = getIntent().getIntExtra("ID",0);
         //validateNameAndId();
 
@@ -110,19 +111,16 @@ public class AddStudentActivity extends AppCompatActivity implements BackProcess
 
             @Override
             public void onClick(View v) {
-                //DatabaseHelper db = DatabaseHelper.getInstance(AddStudentActivity.this);
+
 
                 long roll = Long.parseLong(mEtRollNumber.getText().toString());
                 String name = mEtName.getText().toString();
-                BackProcess backProcess=new BackProcess(AddStudentActivity.this,
-                        AddStudentActivity.this);
 
-                //long id = db.updateStudent(oldRollNum, roll, name);
-                backProcess.execute("update_info",String.valueOf(oldRollNum)
-                        ,String.valueOf(roll),name);
                 createIntent(roll);
                 Log.i("abc", String.valueOf(id));
-                finish();
+                generateDialog("update_info",
+                        String.valueOf(roll),name, String.valueOf(oldRollNum));
+
             }
         });}
 
@@ -150,7 +148,7 @@ public class AddStudentActivity extends AppCompatActivity implements BackProcess
         Intent intent = new Intent();
         intent.putExtra("key_id", id);
         setResult(RESULT_OK, intent);
-        finish();
+
     }
 
     /**
@@ -207,6 +205,58 @@ public class AddStudentActivity extends AppCompatActivity implements BackProcess
     public void getCall(Long x) {
         id=x;
         Log.i("awesrtyui",String.valueOf(id));
+    }
+    public void generateDialog(final String operation,
+                               final String roll ,final String name,final String oldRoll)
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder
+                (AddStudentActivity.this);
+        builder.setTitle(R.string.chooseOptionText);
+        String[] choice = {getString(R.string.async_task),
+                getString(R.string.service),
+                getString(R.string.intent_service)};
+        builder.setItems(choice, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                switch (which) {
+                    case 0:
+                        (new BackProcess(AddStudentActivity.this))
+                                .execute(operation, roll, name,oldRoll);
+                        finish();
+                        break;
+
+                    case 1:
+                        Intent intent = new Intent(AddStudentActivity.this,
+                                BackgroundService.class);
+                        intent.putExtra(Constant.Mode,operation);
+                        intent.putExtra(Constant.Name,name);
+                        intent.putExtra(Constant.RollNo,roll);
+                        intent.putExtra(Constant.oldRollNo,oldRoll);
+                        startService(intent);
+                        finish();
+                        finish();
+                        break;
+
+                    case 2:
+                         Intent intentStudent = new Intent(AddStudentActivity.this,
+                                 BackgroundIntent.class);
+                         intentStudent.putExtra(Constant.Mode,operation);
+                         intentStudent.putExtra(Constant.Name,name);
+                         intentStudent.putExtra(Constant.RollNo,roll);
+                         intentStudent.putExtra(Constant.oldRollNo,oldRoll);
+                         startService(intentStudent);
+                         finish();
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }
 

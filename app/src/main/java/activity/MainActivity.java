@@ -62,6 +62,14 @@ public class MainActivity extends AppCompatActivity implements BackProcessForLis
 
         createRecyclerView();
         list.addAll(db.getAllStudents());
+        if(list.size() == 0)
+        {
+            mStudentView.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            mStudentView.setVisibility(View.GONE);
+        }
         //new BackProcessForList(MainActivity.this,MainActivity.this).execute();
         mAdapter.setOnClickListener(new StudentAdapter.RecyclerViewClickListener() {
 
@@ -161,6 +169,7 @@ public class MainActivity extends AppCompatActivity implements BackProcessForLis
                     Student student = db.getStudent(id);
                     Log.i("name",student.getName());
                     list.add(student);
+                    mStudentView.setVisibility(View.GONE);
                     mAdapter.notifyDataSetChanged();
 
                 }
