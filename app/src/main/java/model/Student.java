@@ -1,43 +1,46 @@
-package model;
+package com.abhar.android.studentmanagementsqlite.database.model;
 
-/**
- * The class Student is the model and helps in setting Roll number and name of student
- * and also in getting name and roll number of student.
- */
 public class Student {
 
-    private String mStudentName;
-    private String mStudentId;
+    public static final String TABLE_NAME = "Student";
+    public static final String COLUMN_ROLL_NUMBER = "ROLL_NO";
+    public static final String COLUMN_NAME = "name";
 
-    /**
-     * Constructor to set the name and roll number of the created student
-     * @param name Name of the student
-     * @param id Roll Number of the student
-     */
-    public Student(String name,String id)
+    private int roll_no;
+    private String name;
+    public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + "("
+            + COLUMN_ROLL_NUMBER + " INTEGER PRIMARY KEY,"
+            + COLUMN_NAME + " TEXT)";
+
+
+
+
+    public Student()
     {
-        mStudentName = name;
-        mStudentId = id;
     }
 
-    /**
-     * Function used to get the name of the student
-     * @return string that is the name of the student
-     */
-    public String getStudentName()
+    public Student(int roll_no, String name)
     {
-
-        return mStudentName;
+        this.roll_no = roll_no;
+        this.name = name;
     }
 
-    /**
-     * Function used to get ID of the student
-     * @return string that is the roll number of the sudent.
-     */
-    public String getStudentId()
+    public void setName(String name)
     {
-
-        return mStudentId;
+        this.name = name;
+    }
+    public void setRollNum(int roll_no)
+    {
+        this.roll_no = roll_no;
     }
 
+    public int getRollNo()
+    {
+        return roll_no;
+    }
+    public String getName()
+    {
+        return name;
+    }
 }
+

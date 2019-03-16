@@ -15,8 +15,11 @@ import android.widget.Button;
 import android.view.View;
 import android.content.Intent;
 import android.widget.LinearLayout;
-
+import android.util.Log;
 import com.abhar.sms.R;
+
+import async.BackProcess;
+import async.BackProcessForList;
 import comparator.sortByIdComparator;
 import comparator.sortByNameComparator;
 
@@ -24,13 +27,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 import adapter.StudentAdapter;
-import model.Student;
+import database.DatabaseHelper;
+
+
+import com.abhar.android.studentmanagementsqlite.database.model.Student;
 
 /**
  * The MainActivity class implements an application that initially has no students
  * but new students information like Name and Roll Number of Student is displayed here.
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements BackProcessForList.Callback {
 
     public static final int REQUEST_CODE_ADD = 1;
     public static final int REQUEST_CODE_EDIT = 2;
@@ -44,15 +50,19 @@ public class MainActivity extends AppCompatActivity {
     private Menu menu;
     private LinearLayout mStudentView;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        DatabaseHelper db = DatabaseHelper.getInstance(MainActivity.this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Button btnAddStudent = findViewById(R.id.btn_add_student);
         mStudentView = findViewById(R.id.ll_image_text);
 
-        createRecyclerView();
 
+        createRecyclerView();
+        list.addAll(db.getAllStudents());
+        //new BackProcessForList(MainActivity.this,MainActivity.this).execute();
         mAdapter.setOnClickListener(new StudentAdapter.RecyclerViewClickListener() {
 
                                         @Override
@@ -144,18 +154,27 @@ public class MainActivity extends AppCompatActivity {
                 if (resultCode == RESULT_OK) {
 
                     mStudentView.setVisibility(View.GONE);
-                    String name = data.getStringExtra("key_name");
-                    String id = data.getStringExtra("key_id");
-                    list.add(new Student(name, id));
+                    //String name = data.getStringExtra("key_name");
+                    long id = data.getLongExtra("key_id",0);
+                    //list.add(new Student(id,name));
+                    DatabaseHelper db = DatabaseHelper.getInstance(MainActivity.this);
+                    Student student = db.getStudent(id);
+                    Log.i("name",student.getName());
+                    list.add(student);
                     mAdapter.notifyDataSetChanged();
 
                 }
             }
         } else if (requestCode == REQUEST_CODE_EDIT) {
             if (resultCode == RESULT_OK) {
-                String name = data.getStringExtra("key_name");
-                String id = data.getStringExtra("key_id");
-                list.set(getPosition(), new Student(name, id));
+                DatabaseHelper db = DatabaseHelper.getInstance(MainActivity.this);
+                //String name = data.getStringExtra("key_name");
+                long id = data.getLongExtra("key_id",0);
+                Log.i("cvgjhbnlkk",String.valueOf(data.getLongExtra("key_id",0)));
+                //list.set(getPosition(), new Student(id,name));
+
+                // Student student
+                list.set(getPosition(), db.getStudent(id));
                 mAdapter.notifyDataSetChanged();
             }
         }
@@ -209,7 +228,15 @@ public class MainActivity extends AppCompatActivity {
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        DatabaseHelper db = DatabaseHelper.getInstance(MainActivity.this);
+                        db.deleteNote(list.get(position));
+
+                        BackProcess backprocess = new BackProcess(MainActivity.this);
+                        backprocess.execute("delete_student",
+                                String.valueOf(list.get(position).getRollNo()),
+                                list.get(position).getName());
                         list.remove(position);
+
                         mAdapter.notifyDataSetChanged();
                         if (list.isEmpty()) {
                             mStudentView.setVisibility(View.VISIBLE);
@@ -263,9 +290,9 @@ public class MainActivity extends AppCompatActivity {
 
         intentView.putExtra("Mode", "View");
         intentView.putExtra
-                ("Name", list.get(position).getStudentName());
+                ("Name", list.get(position).getName());
 
-        intentView.putExtra("ID", list.get(position).getStudentId());
+        intentView.putExtra("ID", list.get(position).getRollNo());
 
         startActivity(intentView);
     }
@@ -281,10 +308,17 @@ public class MainActivity extends AppCompatActivity {
 
         intentEdit.putExtra("Mode", "Edit");
         intentEdit.putExtra
-                ("Name", list.get(position).getStudentName());
+                ("Name", list.get(position).getName());
+        Log.i("qwertyuio",list.get(position).getName());
 
-        intentEdit.putExtra("ID", list.get(position).getStudentId());
+        intentEdit.putExtra("ID", list.get(position).getRollNo());
         startActivityForResult(intentEdit, REQUEST_CODE_EDIT);
+    }
+
+    @Override
+    public void getOutput(ArrayList<Student> out) {
+        list=out;
+        mAdapter.notifyDataSetChanged();
     }
 }
 

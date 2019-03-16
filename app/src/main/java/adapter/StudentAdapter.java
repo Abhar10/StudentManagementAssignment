@@ -10,8 +10,9 @@ import com.abhar.sms.R;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.abhar.android.studentmanagementsqlite.database.model.Student;
 
-import model.Student;
+
 
 /**
  * This class extends the abstract class Adapter. This class helps in coverting a listview
@@ -91,8 +92,8 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.studentV
     public void onBindViewHolder(studentViewHolder myViewHolder, int i) {
         Student text = StudentList.get(i);
 
-        myViewHolder.tvName.setText(text.getStudentName());
-        myViewHolder.tvId.setText(text.getStudentId());
+        myViewHolder.tvName.setText(text.getName());
+        myViewHolder.tvId.setText(String.valueOf(text.getRollNo()));
     }
 
     @Override
