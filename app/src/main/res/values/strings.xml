@@ -28,4 +28,5 @@
     <string name="service">Service</string>
     <string name="intent_service">Intent Service</string>
     <string name="service_msg">Intent Service Running</string>
+    <string name="msg_service">Background Service Running</string>
 </resources>

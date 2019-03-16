@@ -162,9 +162,9 @@ public class MainActivity extends AppCompatActivity implements BackProcessForLis
                 if (resultCode == RESULT_OK) {
 
                     mStudentView.setVisibility(View.GONE);
-                    //String name = data.getStringExtra("key_name");
+
                     long id = data.getLongExtra("key_id",0);
-                    //list.add(new Student(id,name));
+
                     DatabaseHelper db = DatabaseHelper.getInstance(MainActivity.this);
                     Student student = db.getStudent(id);
                     Log.i("name",student.getName());
@@ -177,12 +177,10 @@ public class MainActivity extends AppCompatActivity implements BackProcessForLis
         } else if (requestCode == REQUEST_CODE_EDIT) {
             if (resultCode == RESULT_OK) {
                 DatabaseHelper db = DatabaseHelper.getInstance(MainActivity.this);
-                //String name = data.getStringExtra("key_name");
+
                 long id = data.getLongExtra("key_id",0);
                 Log.i("cvgjhbnlkk",String.valueOf(data.getLongExtra("key_id",0)));
-                //list.set(getPosition(), new Student(id,name));
 
-                // Student student
                 list.set(getPosition(), db.getStudent(id));
                 mAdapter.notifyDataSetChanged();
             }

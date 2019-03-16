@@ -16,7 +16,7 @@
             android:name=".IntentService"
             android:exported="false" />
         <service
-            android:name=".BackgroundService"
+            android:name="background.BackgroundService"
             android:enabled="true"
             android:exported="false" />
 

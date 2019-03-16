@@ -12,14 +12,14 @@ import android.widget.EditText;
 import android.text.TextWatcher;
 import android.text.Editable;
 
-import com.abhar.sms.BackgroundService;
+import background.BackgroundService;
 import com.abhar.sms.R;
 import constant.Constant;
 
 import async.BackProcess;
 
 
-import intentservice.BackgroundIntent;
+import background.BackgroundIntent;
 import validate.validateId;
 import validate.validateName;
 
@@ -42,7 +42,7 @@ public class AddStudentActivity extends AppCompatActivity implements BackProcess
         //  BackGroundTask backgroundTask=new
         setTitle(R.string.second_activity_title);
         initialize();
-        String Mode = getIntent().getStringExtra("Mode");
+        String Mode = getIntent().getStringExtra(Constant.Mode);
         createTextWatcher(mEtName,Mode);
     }
 
@@ -72,7 +72,7 @@ public class AddStudentActivity extends AppCompatActivity implements BackProcess
 
                     Log.i("abc",String.valueOf(roll));
                     createIntent((long)roll);
-                    generateDialog("add_info",String.valueOf(roll),name," ");
+                    generateDialog(Constant.addStudent,String.valueOf(roll),name," ");
 
 
 
@@ -118,7 +118,7 @@ public class AddStudentActivity extends AppCompatActivity implements BackProcess
 
                 createIntent(roll);
                 Log.i("abc", String.valueOf(id));
-                generateDialog("update_info",
+                generateDialog(Constant.updateStudent,
                         String.valueOf(roll),name, String.valueOf(oldRollNum));
 
             }
