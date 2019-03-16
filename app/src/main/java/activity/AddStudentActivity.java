@@ -20,6 +20,7 @@ import async.BackProcess;
 
 
 import background.BackgroundIntent;
+import database.DatabaseHelper;
 import validate.validateId;
 import validate.validateName;
 
@@ -53,10 +54,14 @@ public class AddStudentActivity extends AppCompatActivity implements BackProcess
     private void validateNameAndId()
     {
         mBtnSaveChange.setOnClickListener(new View.OnClickListener() {
-
+            DatabaseHelper databaseHelper = DatabaseHelper.getInstance(AddStudentActivity.this);
             @Override
             public void onClick(View v)
             {
+                if(databaseHelper.isExisting(Integer.parseInt(mEtRollNumber.getText().toString())) == true)
+                {
+                    mEtRollNumber.setError("Enter A Unique Roll Number");
+                }
                 if(validateName.isEmptyName(mEtName.getText().toString()))
                 {
                     mEtName.setError(getString(R.string.valid_name_error));
@@ -65,7 +70,8 @@ public class AddStudentActivity extends AppCompatActivity implements BackProcess
                     mEtRollNumber.setError(getString(R.string.valid_id_error));
                 }
                 else if(! validateName.isEmptyName(mEtRollNumber.getText().toString()) &&
-                        ! validateId.isEmptyId(mEtRollNumber.getText().toString()))
+                        ! validateId.isEmptyId(mEtRollNumber.getText().toString()) &&
+                ! databaseHelper.isExisting(Integer.parseInt(mEtRollNumber.getText().toString())))
                 {
                     int roll = Integer.parseInt(mEtRollNumber.getText().toString());
                     String name = mEtName.getText().toString();
@@ -112,15 +118,30 @@ public class AddStudentActivity extends AppCompatActivity implements BackProcess
             @Override
             public void onClick(View v) {
 
+                DatabaseHelper databaseHelper = DatabaseHelper.getInstance(AddStudentActivity.this);
+                if(databaseHelper.isExisting(Integer.parseInt(mEtRollNumber.getText().toString())))
+                {
+                    mEtRollNumber.setError("Enter A Unique Roll Number");
+                }
+                if(validateName.isEmptyName(mEtName.getText().toString()))
+                {
+                    mEtName.setError(getString(R.string.valid_name_error));
+                }
+                if(validateId.isEmptyId(mEtRollNumber.getText().toString())) {
+                    mEtRollNumber.setError(getString(R.string.valid_id_error));
+                }
+                else if(! validateName.isEmptyName(mEtRollNumber.getText().toString()) &&
+                        ! validateId.isEmptyId(mEtRollNumber.getText().toString()) &&
+                ! databaseHelper.isExisting(Integer.parseInt(mEtRollNumber.getText().toString()))) {
 
-                long roll = Long.parseLong(mEtRollNumber.getText().toString());
-                String name = mEtName.getText().toString();
+                    long roll = Long.parseLong(mEtRollNumber.getText().toString());
+                    String name = mEtName.getText().toString();
 
-                createIntent(roll);
-                Log.i("abc", String.valueOf(id));
-                generateDialog(Constant.updateStudent,
-                        String.valueOf(roll),name, String.valueOf(oldRollNum));
-
+                    createIntent(roll);
+                    Log.i("abc", String.valueOf(id));
+                    generateDialog(Constant.updateStudent,
+                            String.valueOf(roll), name, String.valueOf(oldRollNum));
+                }
             }
         });}
 

@@ -148,6 +148,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return studentList;
     }
+    public boolean isExisting(int id)
+    {
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.query(Student.TABLE_NAME,
+                new String[]{Student.COLUMN_ROLL_NUMBER, Student.COLUMN_NAME},
+                Student.COLUMN_ROLL_NUMBER + "=?",
+                new String[]{String.valueOf(id)}, null, null, null, null);
+
+        if(cursor != null)
+        {
+            return true;
+        }
+        return false;
+    }
 
 
 }
