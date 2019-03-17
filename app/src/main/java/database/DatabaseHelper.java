@@ -156,11 +156,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 Student.COLUMN_ROLL_NUMBER + "=?",
                 new String[]{String.valueOf(id)}, null, null, null, null);
 
-        if(cursor != null)
+
+        if(cursor.getCount() <= 0)
         {
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 
 

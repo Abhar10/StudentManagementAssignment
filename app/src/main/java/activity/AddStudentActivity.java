@@ -257,7 +257,6 @@ public class AddStudentActivity extends AppCompatActivity implements BackProcess
                         intent.putExtra(Constant.oldRollNo,oldRoll);
                         startService(intent);
                         finish();
-                        finish();
                         break;
 
                     case 2:
