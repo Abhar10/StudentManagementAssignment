@@ -8,7 +8,7 @@ public class validateId {
      */
     public static boolean isEmptyId(String userId)
     {
-        if(userId.trim().length() == 0)
+        if(userId.trim().isEmpty())
         {
             return true;
         }

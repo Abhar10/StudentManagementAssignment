@@ -1,37 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/frag_container"
     tools:context="activity.AddStudentActivity">
     
-    <EditText
-        android:id="@+id/et_user_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin_top_edittext"
-        android:hint="@string/input_name"
-        />
-
-    <EditText
-        android:id="@+id/et_user_roll_no"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/et_user_name"
-        android:hint="@string/input_roll_no"
-        android:inputType="number"
-        />
-
-    <Button
-        android:id="@+id/btn_save_changes"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:text="@string/save"
-        android:backgroundTint="@color/colorPrimary"
-        android:textColor="@color/white"
-        />
 
 
-</RelativeLayout>
+</LinearLayout>

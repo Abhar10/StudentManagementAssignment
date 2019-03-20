@@ -10,11 +10,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <service
-            android:name=".BackgroundIntent"
+            android:name="background.BackgroundIntent"
             android:exported="false"></service>
-        <service
-            android:name=".IntentService"
-            android:exported="false" />
+
         <service
             android:name="background.BackgroundService"
             android:enabled="true"

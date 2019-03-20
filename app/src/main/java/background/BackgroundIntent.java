@@ -3,10 +3,7 @@ package background;
 import android.app.IntentService;
 import android.content.Intent;
 import android.widget.Toast;
-import android.util.Log;
-
 import com.abhar.sms.R;
-
 import constant.Constant;
 import database.DatabaseHelper;
 
@@ -15,6 +12,8 @@ public class BackgroundIntent extends IntentService {
         super("BackgroundIntent");
 
     }
+
+
 
     @Override
     public void onHandleIntent(Intent intent)
@@ -25,7 +24,7 @@ public class BackgroundIntent extends IntentService {
         if(intent.getStringExtra(Constant.Mode).equals(Constant.addStudent)){
             databaseHelper.insertStudent(Integer.parseInt(intent.getStringExtra(Constant.RollNo)),
                     intent.getStringExtra(Constant.Name));
-            Log.i("Hello","Hello");
+
         }
         else if(intent.getStringExtra(Constant.Mode).equals(Constant.updateStudent))
         {

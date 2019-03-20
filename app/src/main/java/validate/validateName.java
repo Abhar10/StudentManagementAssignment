@@ -31,7 +31,7 @@ public class validateName {
      */
     public static boolean isEmptyName(String userName)
     {
-        if(userName.trim().length() == 0)
+        if(userName.trim().isEmpty())
         {
            return true;
         }

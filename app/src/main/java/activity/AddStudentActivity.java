@@ -1,56 +1,67 @@
 package activity;
 
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.support.v7.app.AlertDialog;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.text.TextWatcher;
-import android.text.Editable;
 
-import background.BackgroundService;
+import adapter.CommunicationFragments;
+import fragment.AddStudentFragment;
+
 import com.abhar.sms.R;
-import constant.Constant;
-
-import async.BackProcess;
-
-
-import background.BackgroundIntent;
-import database.DatabaseHelper;
-import validate.validateId;
-import validate.validateName;
 
 /**
  * This class helps in performing several actions such as adding a new student,
  * viewing a student details and for editing student details.
  */
 
-public class AddStudentActivity extends AppCompatActivity implements BackProcess.CallbackFor {
+public class AddStudentActivity extends AppCompatActivity implements CommunicationFragments {
     private EditText mEtName;
     private EditText mEtRollNumber;
     private Button mBtnSaveChange;
     private  Long id;
+    private Bundle bundle;
+    private AddStudentFragment addStudentFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_add);
-        //  BackGroundTask backgroundTask=new
-        setTitle(R.string.second_activity_title);
-        initialize();
-        String Mode = getIntent().getStringExtra(Constant.Mode);
-        createTextWatcher(mEtName,Mode);
+
+
+        bundle=getIntent().getExtras();
+        FragmentManager fragmentManager=getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction=fragmentManager.beginTransaction();
+        addStudentFragment=new AddStudentFragment();
+        fragmentTransaction.add(R.id.frag_container,addStudentFragment,"HEloo");
+        fragmentTransaction.commit();
+
     }
 
+    @Override
+    public void communicateForAdd(Bundle bundleData) {
+
+    }
+
+    @Override
+    public void communicateForUpdate(Bundle bundleData) {
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        addStudentFragment.viewPrint(bundle);
+
+    }
     /**
      * Method to check whether entered name and ID are not empty and
      * do not consists of only white spaces.
      */
+    /*
     private void validateNameAndId()
     {
         mBtnSaveChange.setOnClickListener(new View.OnClickListener() {
@@ -90,6 +101,7 @@ public class AddStudentActivity extends AppCompatActivity implements BackProcess
     /**
      * Method when main activity requests for Viewing a student
      */
+    /*
     private void onViewStudent()
     {
         setTitle(R.string.view_string);
@@ -103,6 +115,7 @@ public class AddStudentActivity extends AppCompatActivity implements BackProcess
     /**
      * Method to Edit a student when user requests for it
      */
+    /*
     private void onEditStudent()
     {
         setTitle(R.string.edit_string);
@@ -148,6 +161,7 @@ public class AddStudentActivity extends AppCompatActivity implements BackProcess
     /**
      * Method to check whether Entered Name and ID are valid
      */
+    /*
     private void afterTextChangedValidation()
     {
         if (! validateName.isvalidUserName(mEtName.getText().toString())) {
@@ -164,6 +178,7 @@ public class AddStudentActivity extends AppCompatActivity implements BackProcess
     /**
      * Method to create Intent
      */
+    /*
     private void createIntent(long id)
     {
         Intent intent = new Intent();
@@ -175,6 +190,7 @@ public class AddStudentActivity extends AppCompatActivity implements BackProcess
     /**
      * Initialize variables
      */
+    /*
     private void initialize()
     {
         mEtName = findViewById(R.id.et_user_name);
@@ -187,6 +203,7 @@ public class AddStudentActivity extends AppCompatActivity implements BackProcess
      * @param mEtName EditText for Name
      * @param Mode String for Mode(Edit,View,Delete,Default)
      */
+    /*
     private void createTextWatcher(EditText mEtName, String Mode)
     {
         mEtName.addTextChangedListener(new TextWatcher()  {
@@ -277,6 +294,6 @@ public class AddStudentActivity extends AppCompatActivity implements BackProcess
         });
         AlertDialog dialog = builder.create();
         dialog.show();
-    }
+    }*/
 }
 

@@ -1,6 +1,8 @@
 package com.abhar.android.studentmanagementsqlite.database.model;
 
-public class Student {
+import java.io.Serializable;
+
+public class Student implements Serializable {
 
     public static final String TABLE_NAME = "Student";
     public static final String COLUMN_ROLL_NUMBER = "ROLL_NO";

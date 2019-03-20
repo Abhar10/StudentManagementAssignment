@@ -2,7 +2,7 @@
 <resources>
     <dimen name="image_width">200dp</dimen>
     <dimen name="image_length">200dp</dimen>
-    <dimen name="margin_top_button">520dp</dimen>
+    <dimen name="margin_top_button">560dp</dimen>
     <dimen name="margin_top_editext">32dp</dimen>
     <dimen name="margin_top_edittext">10dp</dimen>
     <dimen name="margin_top_textview">40dp</dimen>
