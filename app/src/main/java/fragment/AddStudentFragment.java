@@ -97,8 +97,6 @@ public class AddStudentFragment extends Fragment {
 
                 if(error)
                 {
-
-
                     int roll = Integer.parseInt(mEtRollNumber.getText().toString());
                     String name = mEtName.getText().toString();
                     String rollNum = mEtRollNumber.getText().toString();
@@ -108,16 +106,6 @@ public class AddStudentFragment extends Fragment {
                     Log.i("abc",String.valueOf(roll));
                     communicationFragments.communicateForAdd(bundle);
                     generateDialog(Constant.addStudent,rollNum,name,"");
-                    //BackProcess backProcess = new BackProcess(mContext);
-                    //backProcess.execute(Constant.addStudent,
-                            //String.valueOf(rollNum),
-                            //name);
-                    //databaseHelper.insertStudent(roll,name);
-
-                    //createIntent((long)roll);
-                    //generateDialog(Constant.addStudent,String.valueOf(roll),name," ");
-
-
 
                 }}}
         );
@@ -148,9 +136,6 @@ public class AddStudentFragment extends Fragment {
             }
         });
 
-
-            //validateNameAndId();
-
     }
 
     /**
@@ -169,49 +154,6 @@ public class AddStudentFragment extends Fragment {
         }
     }
 
-    /**
-     * Method to check whether entered name and ID are not empty and
-     * do not consists of only white spaces.
-     */
-   /* private void validateNameAndId()
-    {
-        mBtnSaveChange.setOnClickListener(new View.OnClickListener() {
-            DatabaseHelper databaseHelper = DatabaseHelper.getInstance(getActivity());
-            @Override
-            public void onClick(View v)
-            {
-                if(databaseHelper.isExisting(Integer.parseInt(mEtRollNumber.getText().toString())) == true)
-                {
-                    mEtRollNumber.setError("Enter A Unique Roll Number");
-                }
-                if(validateName.isEmptyName(mEtName.getText().toString()))
-                {
-                    mEtName.setError(getString(R.string.valid_name_error));
-                }
-                if(validateId.isEmptyId(mEtRollNumber.getText().toString())) {
-                    mEtRollNumber.setError(getString(R.string.valid_id_error));
-                }
-                else if(! validateName.isEmptyName(mEtRollNumber.getText().toString()) &&
-                        ! validateId.isEmptyId(mEtRollNumber.getText().toString()) &&
-                        ! databaseHelper.isExisting(Integer.parseInt(mEtRollNumber.getText().toString())))
-                {
-
-                    int roll = Integer.parseInt(mEtRollNumber.getText().toString());
-                    String name = mEtName.getText().toString();
-                    String rollNum = mEtRollNumber.getText().toString();
-                    Log.i("abc",String.valueOf(roll));
-                    //createIntent((long)roll);
-                    //generateDialog(Constant.addStudent,String.valueOf(roll),name," ");
-                    Bundle bundleData = new Bundle();
-                    bundleData.putString("Name",name);
-                    //bundleData.putString("RollNum",rollNum);
-                    communicationFragments.communicate(bundleData);
-
-
-                }}}
-        );
-
-    }*/
     public void update(Bundle bundleData){
 
         mEtName.setText(bundleData.getString("Name"));

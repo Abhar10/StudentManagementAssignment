@@ -152,40 +152,6 @@ public class StudentListFragment extends Fragment {
 
     }
 
-    /*@Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == REQUEST_CODE_ADD) {
-            {
-                if (resultCode == RESULT_OK) {
-
-                    mStudentView.setVisibility(View.GONE);
-
-                    long id = data.getLongExtra("key_id",0);
-
-                    DatabaseHelper db = DatabaseHelper.getInstance(getActivity());
-                    com.abhar.android.studentmanagementsqlite.database.model.Student student = db.getStudent(id);
-                    Log.i("name",student.getName());
-                    list.add(student);
-                    mStudentView.setVisibility(View.GONE);
-                    mAdapter.notifyDataSetChanged();
-
-                }
-            }
-        } else if (requestCode == REQUEST_CODE_EDIT) {
-            if (resultCode == RESULT_OK) {
-                DatabaseHelper db = DatabaseHelper.getInstance(getActivity());
-
-                long id = data.getLongExtra("key_id",0);
-                Log.i("cvgjhbnlkk",String.valueOf(data.getLongExtra("key_id",0)));
-
-                list.set(getPosition(), db.getStudent(id));
-                mAdapter.notifyDataSetChanged();
-            }
-        }
-    }*/
 
     /**
      * This function sets the position of the item to be edited
@@ -298,31 +264,6 @@ public class StudentListFragment extends Fragment {
      * @param position Position clicked
      */
 
-    /**
-     * Method to create Intent for Edit
-     * @param position Position clicked
-     */
-    /*
-    private void createEditIntent(int position) {
-        setPosition(position);
-        Intent intentEdit = new Intent(
-                MainActivity.this, AddStudentActivity.class);
-
-        intentEdit.putExtra("Mode", "Edit");
-        intentEdit.putExtra
-                ("Name", list.get(position).getName());
-        Log.i("qwertyuio",list.get(position).getName());
-
-        intentEdit.putExtra("ID", list.get(position).getRollNo());
-        startActivityForResult(intentEdit, REQUEST_CODE_EDIT);
-    }*/
-
-    /*
-    @Override
-    public void getOutput(ArrayList<com.abhar.android.studentmanagementsqlite.database.model.Student> out) {
-        list=out;
-        mAdapter.notifyDataSetChanged();
-    }*/
     public void addStudent(Bundle bundleData){
 
 

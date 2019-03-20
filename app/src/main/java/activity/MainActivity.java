@@ -44,17 +44,12 @@ import com.abhar.android.studentmanagementsqlite.database.model.Student;
  */
 public class MainActivity extends AppCompatActivity implements CommunicationFragments {
 
-   // public static final int REQUEST_CODE_ADD = 1;
-    //public static final int REQUEST_CODE_EDIT = 2;
-    //private final int VIEW = 0;
-    //private final int EDIT = 1;
-    //private final int DELETE = 2;
     private ArrayList<Student> list = new ArrayList<Student>();
     final GridLayoutManager grid = new GridLayoutManager(this, 1);
     private StudentAdapter mAdapter;
-    //private int mTempPosition;
+
     private Menu menu;
-    //private LinearLayout mStudentView;
+
     private ViewPager viewPager;
 
 
@@ -114,61 +109,6 @@ public class MainActivity extends AppCompatActivity implements CommunicationFrag
         AddStudentFragment f = (AddStudentFragment)getSupportFragmentManager().findFragmentByTag(tag);
         f.update(bundleData);
     }
-
-
-/*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        this.menu = menu;
-        MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-            case R.id.menu_grid_layout:
-                LinearToGridToLinear();
-                return true;
-
-            case R.id.menu_submenu_sort_by_name:
-                Collections.sort(list, new sortByNameComparator());
-                mAdapter.notifyDataSetChanged();
-                return true;
-
-            case R.id.menu_submenu_sort_by_id:
-                Collections.sort(list, new sortByIdComparator());
-                mAdapter.notifyDataSetChanged();
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-*/
-
-    /**
-     * Method to convert List from Linear to Grid and from Grid to Linear
-     */
-/*
-    private void LinearToGridToLinear() {
-
-        if (grid.getSpanCount() == 2) {
-            menu.findItem(R.id.menu_grid_layout).setIcon(ContextCompat.getDrawable(this,
-                    R.drawable.grid_image));
-            grid.setSpanCount(1);
-        } else {
-            menu.findItem(R.id.menu_grid_layout).setIcon(ContextCompat.getDrawable(this,
-                    R.drawable.list_view_image));
-            grid.setSpanCount(2);
-        }
-    }
-
-*/
-
 }
 
 
