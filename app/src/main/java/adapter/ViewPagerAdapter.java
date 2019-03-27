@@ -19,16 +19,16 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
         switch (position)
         {
             case 0:
-                return new StudentListFragment(); //ChildFragment1 at position 0
+                return new StudentListFragment();
             case 1:
-                return new AddStudentFragment(); //ChildFragment2 at position 1
+                return new AddStudentFragment();
         }
         return null;
     }
 
     @Override
     public int getCount() {
-        return 2; //two fragments
+        return 2;
     }
 
     @Nullable

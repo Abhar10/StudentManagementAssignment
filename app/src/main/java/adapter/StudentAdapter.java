@@ -20,7 +20,7 @@ import com.abhar.android.studentmanagementsqlite.database.model.Student;
  */
 public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.studentViewHolder>
 {
-    List<Student> StudentList;
+    private List<Student> StudentList;
     private RecyclerViewClickListener mListener;
 
     /**
@@ -51,7 +51,7 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.studentV
      * Inner class of RecyclerView for view holder
      */
     public class studentViewHolder extends RecyclerView.ViewHolder {
-        public TextView tvName, tvId;
+        private TextView tvName, tvId;
 
         /**
          * Constructor to initialize view of view holder
@@ -90,7 +90,7 @@ public class StudentAdapter extends RecyclerView.Adapter<StudentAdapter.studentV
 
     @Override
     public void onBindViewHolder(studentViewHolder myViewHolder, int i) {
-        Student text = StudentList.get(i);
+        Student text = StudentList.get(myViewHolder.getAdapterPosition());
 
         myViewHolder.tvName.setText(text.getName());
         myViewHolder.tvId.setText(String.valueOf(text.getRollNo()));

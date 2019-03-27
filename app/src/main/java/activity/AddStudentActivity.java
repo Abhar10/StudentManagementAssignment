@@ -18,10 +18,6 @@ import com.abhar.sms.R;
  */
 
 public class AddStudentActivity extends AppCompatActivity implements CommunicationFragments {
-    private EditText mEtName;
-    private EditText mEtRollNumber;
-    private Button mBtnSaveChange;
-    private  Long id;
     private Bundle bundle;
     private AddStudentFragment addStudentFragment;
 
@@ -36,7 +32,7 @@ public class AddStudentActivity extends AppCompatActivity implements Communicati
         FragmentManager fragmentManager=getSupportFragmentManager();
         FragmentTransaction fragmentTransaction=fragmentManager.beginTransaction();
         addStudentFragment=new AddStudentFragment();
-        fragmentTransaction.add(R.id.frag_container,addStudentFragment,"HEloo");
+        fragmentTransaction.add(R.id.frag_container,addStudentFragment);
         fragmentTransaction.commit();
 
     }
@@ -55,7 +51,6 @@ public class AddStudentActivity extends AppCompatActivity implements Communicati
     protected void onStart() {
         super.onStart();
         addStudentFragment.viewPrint(bundle);
-
     }
 }
 

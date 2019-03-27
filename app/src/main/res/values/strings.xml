@@ -32,4 +32,9 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="error_retrieve">Error in retrieving data. Please try again</string>
+    <string name="unique_id_error">Enter A Unique Roll Number</string>
+    <string name="broadcastReciever">Broadcast Receiver</string>
+    <string name="broadcastRecieved">Broadcast Received</string>
+    <string name="errorRetrieve">Error in retrieving data. Please try again</string>
 </resources>

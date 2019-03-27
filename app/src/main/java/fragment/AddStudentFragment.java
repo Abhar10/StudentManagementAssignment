@@ -1,25 +1,23 @@
 package fragment;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.Uri;
+import android.content.IntentFilter;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-
+import android.widget.Toast;
 import com.abhar.sms.R;
-
-import activity.AddStudentActivity;
 import activity.MainActivity;
 import adapter.CommunicationFragments;
 import async.BackProcess;
@@ -30,13 +28,29 @@ import database.DatabaseHelper;
 import validate.validateId;
 import validate.validateName;
 
-
 public class AddStudentFragment extends Fragment {
     private EditText mEtName;
     private EditText mEtRollNumber;
     private Button mBtnSaveChange;
     private CommunicationFragments communicationFragments;
     private Context mContext;
+    private StudentBroadcastReceiver studentBroadcastReceiver = new StudentBroadcastReceiver();
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        IntentFilter intentFilter = new IntentFilter(Constant.FILTER_ACTION_KEY);
+        LocalBroadcastManager.getInstance(mContext).registerReceiver(studentBroadcastReceiver,intentFilter);
+
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        LocalBroadcastManager.getInstance(mContext).unregisterReceiver(studentBroadcastReceiver);
+
+    }
 
     @Override
     public void onAttach(Context context) {
@@ -45,7 +59,7 @@ public class AddStudentFragment extends Fragment {
         try {
             communicationFragments=(CommunicationFragments)mContext;
         }catch (ClassCastException e) {
-            throw new ClassCastException("Error in retrieving data. Please try again");
+            throw new ClassCastException(getString(R.string.error_retrieve));
         }
 
     }
@@ -59,57 +73,23 @@ public class AddStudentFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
 
-       // (getActivity()).setToolbarTitle();
         View rootView = inflater.inflate(R.layout.fragment_add_student, container, false);
+        initialize(rootView);
+        createTextWatcher(mEtName);
+        onSaveButtonPress();
+        return rootView;
+    }
+
+    /**
+     * Method to initialize variables
+     * @param rootView the inflated fragment view
+     */
+    public void initialize(View rootView)
+    {
         mEtName = rootView.findViewById(R.id.et_user_name);
         mEtRollNumber = rootView.findViewById(R.id.et_user_roll_no);
         mBtnSaveChange = rootView.findViewById(R.id.btn_save_changes);
-        createTextWatcher(mEtName);
-
-        mBtnSaveChange.setOnClickListener(new View.OnClickListener() {
-
-            DatabaseHelper databaseHelper = DatabaseHelper.getInstance(getActivity());
-
-            @Override
-            public void onClick(View v)
-            {
-                boolean error=true;
-
-                if(validateName.isEmptyName(mEtName.getText().toString()))
-                {
-                    mEtName.setError(getString(R.string.valid_name_error));
-                    error=false;
-                    //mBtnSaveChange.setEnabled(false);
-                }
-                if(validateId.isEmptyId(mEtRollNumber.getText().toString())) {
-                    mEtRollNumber.setError(getString(R.string.valid_id_error));
-                    error=false;
-                   // mBtnSaveChange.setEnabled(false);
-                }
-                else if(databaseHelper.isExisting(Integer.parseInt(mEtRollNumber.getText().toString())))
-                {
-                    mEtRollNumber.setError("Enter A Unique Roll Number");
-                    error=false;
-                    //mBtnSaveChange.setEnabled(false);
-                }
-
-                if(error)
-                {
-                    int roll = Integer.parseInt(mEtRollNumber.getText().toString());
-                    String name = mEtName.getText().toString();
-                    String rollNum = mEtRollNumber.getText().toString();
-                    Bundle bundle = new Bundle();
-                    bundle.putString("Name", name);
-                    bundle.putString("Roll",rollNum);
-                    Log.i("abc",String.valueOf(roll));
-                    communicationFragments.communicateForAdd(bundle);
-                    generateDialog(Constant.addStudent,rollNum,name,"");
-
-                }}}
-        );
-        return rootView;
     }
     /**
      * Method to check whether user is typing valid text
@@ -154,12 +134,21 @@ public class AddStudentFragment extends Fragment {
         }
     }
 
+    /**
+     * Method to transfer data from one fragment to other
+     * @param bundleData bundle stores the EditTexts data
+     */
     public void update(Bundle bundleData){
 
-        mEtName.setText(bundleData.getString("Name"));
-        mEtRollNumber.setText(bundleData.getString("RollNum"));
+        mEtName.setText(bundleData.getString(Constant.Name));
+        mEtRollNumber.setText(bundleData.getString(Constant.rollNum));
 
     }
+
+    /**
+     * Method to View the selected Item of List
+     * @param bundleData bundle stores the data to be viewed
+     */
     public void viewPrint(Bundle bundleData){
         mEtName.setText(bundleData.getString(Constant.Name));
         mEtRollNumber.setText(bundleData.getString(Constant.RollNo));
@@ -167,16 +156,14 @@ public class AddStudentFragment extends Fragment {
         mEtRollNumber.setEnabled(false);
         mEtName.setEnabled(false);
     }
-    public  void onViewStudent(String name,String id)
-    {
-        //mContext.setTitle(R.string.view_string);
-        mEtName.setText(name);
-        mEtRollNumber.setText(id);
-        mEtRollNumber.setEnabled(false);
-        mEtName.setEnabled(false);
-        mBtnSaveChange.setVisibility(View.GONE);
-    }
 
+    /**
+     * Generate Dialog for AsyncTask, Service and Intent Service
+     * @param operation Mode
+     * @param roll Roll Number
+     * @param name Name
+     * @param oldRoll Roll Number to be updated
+     */
     public void generateDialog(final String operation,
                                final String roll ,final String name,final String oldRoll)
     {
@@ -235,7 +222,59 @@ public class AddStudentFragment extends Fragment {
         dialog.show();
     }
 
+    /**
+     * Method to perform actions on Save Button Pressed
+     */
+    public void onSaveButtonPress()
+    {
+        mBtnSaveChange.setOnClickListener(new View.OnClickListener() {
 
+            DatabaseHelper databaseHelper = DatabaseHelper.getInstance(getActivity());
 
+            @Override
+            public void onClick(View v)
+            {
+                boolean error=false;
+
+                if(validateName.isEmptyName(mEtName.getText().toString()))
+                {
+                    mEtName.setError(getString(R.string.valid_name_error));
+                    error=true;
+                }
+                if(validateId.isEmptyId(mEtRollNumber.getText().toString())) {
+                    mEtRollNumber.setError(getString(R.string.valid_id_error));
+                    error=true;
+                }
+                else if(databaseHelper.isExisting(Integer.parseInt(mEtRollNumber.getText().toString())))
+                {
+                    mEtRollNumber.setError(getString(R.string.unique_id_error));
+                    error=true;
+                }
+
+                if(! error)
+                {
+                    String name = mEtName.getText().toString();
+                    String rollNum = mEtRollNumber.getText().toString();
+                    Bundle bundle = new Bundle();
+                    bundle.putString(Constant.Name, name);
+                    bundle.putString(Constant.roll,rollNum);
+                    communicationFragments.communicateForAdd(bundle);
+                    generateDialog(Constant.addStudent,rollNum,name,"");
+
+                }}}
+        );
+    }
+
+    /**Inner broadcast receiver that receives the broadcast if the services have indeed added the elements
+     * in the database.
+     */
+    public class StudentBroadcastReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            Toast.makeText(context,getString(R.string.broadcastRecieved),Toast.LENGTH_SHORT).show();
+        }
+    }
 }
+
 

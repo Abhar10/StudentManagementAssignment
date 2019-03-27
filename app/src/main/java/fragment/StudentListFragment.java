@@ -51,92 +51,27 @@ public class StudentListFragment extends Fragment {
     private Context mContext;
     private CommunicationFragments communicationFragments;
     private Menu menu;
-
-
-
+    Button btnAddStudent;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        ((MainActivity)mContext).setToolbarTitle();
         super.onCreateView(inflater, container, savedInstanceState);
         View rootView = inflater.inflate(R.layout.fragment_student_list, container, false);
         setHasOptionsMenu(true);
 
-        Button btnAddStudent = rootView.findViewById(R.id.btn_add_student);
+        btnAddStudent = rootView.findViewById(R.id.btn_add_student);
         mStudentView = rootView.findViewById(R.id.ll_image_text);
 
         DatabaseHelper db = DatabaseHelper.getInstance(getActivity());
         createRecyclerView(rootView);
         list.addAll(db.getAllStudents());
-        if(list.size() == 0)
-        {
-            mStudentView.setVisibility(View.VISIBLE);
-        }
-        else
-        {
-            mStudentView.setVisibility(View.GONE);
-        }
-        //new BackProcessForList(MainActivity.this,MainActivity.this).execute();
-        mAdapter.setOnClickListener(new StudentAdapter.RecyclerViewClickListener() {
+        displayNoStudentMsg();
+        onAdapterItemClick();
 
-                                        @Override
-                                        public void onClick(final int position) {
+        onAddButtonClick();
 
-                                            AlertDialog.Builder builder = new AlertDialog.Builder
-                                                    (getContext());
-                                            builder.setTitle(R.string.chooseOptionText);
-                                            String[] choice = {getString(R.string.viewText),
-                                                    getString(R.string.editText),
-                                                    getString(R.string.deleteText)};
-                                            builder.setItems(choice, new DialogInterface.OnClickListener() {
-
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    switch (which) {
-                                                        case VIEW:
-                                                           viewStudent(position);
-                                                            break;
-
-                                                        case EDIT:
-
-                                                            setPosition(position);
-                                                            editStudent(position);
-
-                                                            ((MainActivity)mContext).changeTab();
-                                                            break;
-
-                                                        case DELETE:
-                                                           deleteStudent(position);
-                                                            break;
-
-                                                        default:
-                                                            break;
-                                                    }
-                                                }
-                                            });
-                                            AlertDialog dialog = builder.create();
-                                            dialog.show();
-                                        }
-                                    }
-        );
-
-
-        btnAddStudent.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-
-                //communicationFragments.communicate("Raj");
-                ((MainActivity)mContext).changeTab();
-
-               // Intent intent = new Intent(getActivity(), AddStudentActivity.class);
-                //startActivityForResult(intent, REQUEST_CODE_ADD);
-
-            }
-        });
         return rootView;
     }
 
@@ -147,11 +82,40 @@ public class StudentListFragment extends Fragment {
         try {
             communicationFragments=(CommunicationFragments)mContext;
         }catch (ClassCastException e) {
-            throw new ClassCastException("Error in retrieving data. Please try again");
+            throw new ClassCastException(getString(R.string.errorRetrieve));
         }
 
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        this.menu = menu;
+        inflater.inflate(R.menu.menu, menu);
+        super.onCreateOptionsMenu(menu,inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.menu_grid_layout:
+                LinearToGridToLinear();
+                return true;
+
+            case R.id.menu_submenu_sort_by_name:
+                Collections.sort(list, new sortByNameComparator());
+                mAdapter.notifyDataSetChanged();
+                return true;
+
+            case R.id.menu_submenu_sort_by_id:
+                Collections.sort(list, new sortByIdComparator());
+                mAdapter.notifyDataSetChanged();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
 
     /**
      * This function sets the position of the item to be edited
@@ -160,17 +124,6 @@ public class StudentListFragment extends Fragment {
      */
     private void setPosition(int position) {
         mTempPosition = position;
-    }
-
-    /**
-     * This function returns the position of item to be edited
-     *
-     * @return mTempPosition returns the position which is to be edited
-     */
-    private int getPosition() {
-        int tempPosition = mTempPosition;
-        mTempPosition = 0;
-        return tempPosition;
     }
 
     /**
@@ -185,7 +138,6 @@ public class StudentListFragment extends Fragment {
         mContext.startActivity(intent);
     }
 
-
     /**
      * Method to Edit Student which is clicked.
      *
@@ -194,18 +146,17 @@ public class StudentListFragment extends Fragment {
     private void editStudent(final int position) {
 
         Bundle bundleData = new Bundle();
-        bundleData.putString("RollNum",String.valueOf(list.get(position).getRollNo()));
-        bundleData.putString("Name",list.get(position).getName());
+        bundleData.putString(Constant.rollNum,String.valueOf(list.get(position).getRollNo()));
+        bundleData.putString(Constant.Name,list.get(position).getName());
 
         communicationFragments.communicateForUpdate(bundleData);
 
         BackProcess backProcess = new BackProcess(mContext);
-        backProcess.execute("delete_student",
+        backProcess.execute(Constant.deleteStudent,
                 String.valueOf(list.get(position).getRollNo()),
                 list.get(position).getName());
 
         list.remove(position);
-
     }
 
     /**
@@ -224,7 +175,7 @@ public class StudentListFragment extends Fragment {
                         db.deleteNote(list.get(position));
 
                         BackProcess backprocess = new BackProcess(getActivity());
-                        backprocess.execute("delete_student",
+                        backprocess.execute(Constant.deleteStudent,
                                 String.valueOf(list.get(position).getRollNo()),
                                 list.get(position).getName());
                         list.remove(position);
@@ -257,65 +208,23 @@ public class StudentListFragment extends Fragment {
         recyclerView.setAdapter(mAdapter);
     }
 
-
-
     /**
-     * Method to create Intent for viewing
-     * @param position Position clicked
+     * Method to Add Student
+     * @param bundleData bundle stores the Student Data
      */
 
     public void addStudent(Bundle bundleData){
 
-
-        Student student = new Student(Integer.parseInt(bundleData.getString("Roll")),
-                bundleData.getString("Name"));
+        Student student = new Student(Integer.parseInt(bundleData.getString(Constant.roll)),
+                bundleData.getString(Constant.Name));
         list.add(student);
         mAdapter.notifyDataSetChanged();
-        if(! list.isEmpty())
-        {
-            mStudentView.setVisibility(View.GONE);
-        }
-
+        displayNoStudentMsg();
     }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        this.menu = menu;
-        //MenuInflater menuInflater = getActivity().getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
-        //return true;
-        super.onCreateOptionsMenu(menu,inflater);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-            case R.id.menu_grid_layout:
-                LinearToGridToLinear();
-                return true;
-
-            case R.id.menu_submenu_sort_by_name:
-                Collections.sort(list, new sortByNameComparator());
-                mAdapter.notifyDataSetChanged();
-                return true;
-
-            case R.id.menu_submenu_sort_by_id:
-                Collections.sort(list, new sortByIdComparator());
-                mAdapter.notifyDataSetChanged();
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-
 
     /**
      * Method to convert List from Linear to Grid and from Grid to Linear
      */
-
     private void LinearToGridToLinear() {
 
         if (grid.getSpanCount() == 2) {
@@ -329,7 +238,81 @@ public class StudentListFragment extends Fragment {
         }
     }
 
+    /**
+     * Method to display No Student Added when there are No Students in the List
+     */
+    public void displayNoStudentMsg()
+    {
+        if(list.size() == 0)
+        {
+            mStudentView.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            mStudentView.setVisibility(View.GONE);
+        }
+    }
 
+    /**
+     * Method to perform various Actions on clicking Item of List
+     */
+    public void onAdapterItemClick()
+    {
+        mAdapter.setOnClickListener(new StudentAdapter.RecyclerViewClickListener() {
+
+            @Override
+            public void onClick(final int position) {
+                AlertDialog.Builder builder = new AlertDialog.Builder
+                        (getContext());
+                builder.setTitle(R.string.chooseOptionText);
+                String[] choice = {getString(R.string.viewText),
+                        getString(R.string.editText),
+                        getString(R.string.deleteText)};
+                builder.setItems(choice, new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) { switch (which) {
+                        case VIEW:
+                            viewStudent(position);
+                            break;
+
+                        case EDIT:
+                            setPosition(position);
+                            editStudent(position);
+                            ((MainActivity)mContext).changeTab();
+                            break;
+
+                        case DELETE:
+                            deleteStudent(position);
+                            break;
+
+                        default:
+                            break;
+                    }
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+        });
+
+    }
+
+    /**
+     * Method to perform action on Add Student Button Press
+     */
+    public void onAddButtonClick()
+    {
+        btnAddStudent.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                ((MainActivity)mContext).changeTab();
+
+            }
+        });
+    }
 }
 
 
