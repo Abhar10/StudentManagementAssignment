@@ -94,42 +94,43 @@ public class MainActivity extends AppCompatActivity implements BackProcessForLis
     {
         mAdapter.setOnClickListener(new StudentAdapter.RecyclerViewClickListener() {
 
-                                        @Override
-                                        public void onClick(final int position) {
+            @Override
+            public void onClick(final int position) {
 
-                                            AlertDialog.Builder builder = new AlertDialog.Builder
-                                                    (MainActivity.this);
-                                            builder.setTitle(R.string.chooseOptionText);
-                                            String[] choice = {getString(R.string.viewText),
-                                                    getString(R.string.editText),
-                                                    getString(R.string.deleteText)};
-                                            builder.setItems(choice, new DialogInterface.OnClickListener() {
+                AlertDialog.Builder builder = new AlertDialog.Builder
+                        (MainActivity.this);
+                builder.setTitle(R.string.chooseOptionText);
+                String[] choice = {getString(R.string.viewText),
+                        getString(R.string.editText),
+                        getString(R.string.deleteText)};
+                builder.setItems(choice, new DialogInterface.OnClickListener() {
 
-                                                @Override
-                                                public void onClick(DialogInterface dialog, int which) {
-                                                    switch (which) {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
 
-                                                        case Constant.VIEW:
-                                                            createViewIntent(position);
-                                                            break;
+                            case Constant.VIEW:
+                                createViewIntent(position);
+                                break;
 
-                                                        case Constant.EDIT:
-                                                            createEditIntent(position);
-                                                            break;
+                            case Constant.EDIT:
+                                createEditIntent(position);
+                                break;
 
-                                                        case Constant.DELETE:
-                                                            deleteStudent(position);
-                                                            break;
-                                                        default:
-                                                            break;
+                            case Constant.DELETE:
+                                deleteStudent(position);
+                                break;
 
-                                                    }
-                                                }
-                                            });
-                                            AlertDialog dialog = builder.create();
-                                            dialog.show();
-                                        }
-                                    }
+                            default:
+                                break;
+
+                        }
+                    }
+                });
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            }
+        }
         );
     }
 
@@ -217,7 +218,7 @@ public class MainActivity extends AppCompatActivity implements BackProcessForLis
         } else if (requestCode == Constant.REQUEST_CODE_EDIT) {
             if (resultCode == RESULT_OK) {
                 DatabaseHelper db = DatabaseHelper.getInstance(MainActivity.this);
-                long id = data.getLongExtra("key_id",0);
+                long id = data.getLongExtra(Constant.keyId,0);
                 list.set(getPosition(), db.getStudent(id));
                 mAdapter.notifyDataSetChanged();
             }
