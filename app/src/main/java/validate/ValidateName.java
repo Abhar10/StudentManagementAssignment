@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 /**
  * Class validateName checks if the input name is valid or not
  */
-public class validateName {
+public class ValidateName {
 
     private static final Pattern usrNamePtrn = Pattern.compile("^[a-zA-Z\\s]*$");
 
@@ -33,7 +33,7 @@ public class validateName {
     {
         if(userName.trim().length() == 0)
         {
-           return true;
+            return true;
         }
         else
         {

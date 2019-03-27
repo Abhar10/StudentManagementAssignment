@@ -1,6 +1,6 @@
 package validate;
 
-public class validateId {
+public class ValidateId {
     /**
      * Function to check whether the entered Roll number is empty or consists of only white spaces
      * @param userId The username which is to be checked

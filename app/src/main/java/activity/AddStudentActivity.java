@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,8 +20,8 @@ import async.BackProcess;
 
 import background.BackgroundIntent;
 import database.DatabaseHelper;
-import validate.validateId;
-import validate.validateName;
+import validate.ValidateId;
+import validate.ValidateName;
 
 /**
  * This class helps in performing several actions such as adding a new student,
@@ -40,7 +39,6 @@ public class AddStudentActivity extends AppCompatActivity implements BackProcess
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_add);
-        //  BackGroundTask backgroundTask=new
         setTitle(R.string.second_activity_title);
         initialize();
         String Mode = getIntent().getStringExtra(Constant.Mode);
@@ -51,36 +49,19 @@ public class AddStudentActivity extends AppCompatActivity implements BackProcess
      * Method to check whether entered name and ID are not empty and
      * do not consists of only white spaces.
      */
-    private void validateNameAndId()
+    private void addStudent()
     {
         mBtnSaveChange.setOnClickListener(new View.OnClickListener() {
-            DatabaseHelper databaseHelper = DatabaseHelper.getInstance(AddStudentActivity.this);
             @Override
             public void onClick(View v)
             {
-                if(databaseHelper.isExisting(Integer.parseInt(mEtRollNumber.getText().toString())) == true)
-                {
-                    mEtRollNumber.setError("Enter A Unique Roll Number");
-                }
-                if(validateName.isEmptyName(mEtName.getText().toString()))
-                {
-                    mEtName.setError(getString(R.string.valid_name_error));
-                }
-                if(validateId.isEmptyId(mEtRollNumber.getText().toString())) {
-                    mEtRollNumber.setError(getString(R.string.valid_id_error));
-                }
-                else if(! validateName.isEmptyName(mEtRollNumber.getText().toString()) &&
-                        ! validateId.isEmptyId(mEtRollNumber.getText().toString()) &&
-                ! databaseHelper.isExisting(Integer.parseInt(mEtRollNumber.getText().toString())))
+                boolean flag = isNameIdValid();
+                if(flag)
                 {
                     int roll = Integer.parseInt(mEtRollNumber.getText().toString());
                     String name = mEtName.getText().toString();
-
-                    Log.i("abc",String.valueOf(roll));
                     createIntent((long)roll);
-                    generateDialog(Constant.addStudent,String.valueOf(roll),name," ");
-
-
+                    generateServiceDialog(Constant.addStudent,String.valueOf(roll),name," ");
 
                 }}}
         );
@@ -93,8 +74,8 @@ public class AddStudentActivity extends AppCompatActivity implements BackProcess
     private void onViewStudent()
     {
         setTitle(R.string.view_string);
-        mEtName.setText(getIntent().getStringExtra("Name"));
-        mEtRollNumber.setText(getIntent().getStringExtra("ID"));
+        mEtName.setText(getIntent().getStringExtra(Constant.Name));
+        mEtRollNumber.setText(getIntent().getStringExtra(Constant.Id));
         mEtRollNumber.setEnabled(false);
         mEtName.setEnabled(false);
         mBtnSaveChange.setVisibility(View.GONE);
@@ -106,40 +87,22 @@ public class AddStudentActivity extends AppCompatActivity implements BackProcess
     private void onEditStudent()
     {
         setTitle(R.string.edit_string);
-        mEtName.setText(getIntent().getStringExtra("Name"));
-        mEtRollNumber.setText(String.valueOf(getIntent().getIntExtra("ID",0)));
+        mEtName.setText(getIntent().getStringExtra(Constant.Name));
+        mEtRollNumber.setText(String.valueOf(getIntent().getIntExtra(Constant.Id,0)));
         mBtnSaveChange.setText(getString(R.string.save_changes_button));
-       // final String oldName = getIntent().getStringExtra("Name");
-        final int oldRollNum = getIntent().getIntExtra("ID",0);
-        //validateNameAndId();
+        final int oldRollNum = getIntent().getIntExtra(Constant.Id,0);
 
         mBtnSaveChange.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
 
-                DatabaseHelper databaseHelper = DatabaseHelper.getInstance(AddStudentActivity.this);
-                if(databaseHelper.isExisting(Integer.parseInt(mEtRollNumber.getText().toString())))
-                {
-                    mEtRollNumber.setError("Enter A Unique Roll Number");
-                }
-                if(validateName.isEmptyName(mEtName.getText().toString()))
-                {
-                    mEtName.setError(getString(R.string.valid_name_error));
-                }
-                if(validateId.isEmptyId(mEtRollNumber.getText().toString())) {
-                    mEtRollNumber.setError(getString(R.string.valid_id_error));
-                }
-                else if(! validateName.isEmptyName(mEtRollNumber.getText().toString()) &&
-                        ! validateId.isEmptyId(mEtRollNumber.getText().toString()) &&
-                ! databaseHelper.isExisting(Integer.parseInt(mEtRollNumber.getText().toString()))) {
-
+                boolean flag = isNameIdValid();
+                if(flag) {
                     long roll = Long.parseLong(mEtRollNumber.getText().toString());
                     String name = mEtName.getText().toString();
-
                     createIntent(roll);
-                    Log.i("abc", String.valueOf(id));
-                    generateDialog(Constant.updateStudent,
+                    generateServiceDialog(Constant.updateStudent,
                             String.valueOf(roll), name, String.valueOf(oldRollNum));
                 }
             }
@@ -150,7 +113,7 @@ public class AddStudentActivity extends AppCompatActivity implements BackProcess
      */
     private void afterTextChangedValidation()
     {
-        if (! validateName.isvalidUserName(mEtName.getText().toString())) {
+        if (! ValidateName.isvalidUserName(mEtName.getText().toString())) {
             mEtName.setError(getString(R.string.error_msg));
             mBtnSaveChange.setEnabled(false);
         }
@@ -167,7 +130,7 @@ public class AddStudentActivity extends AppCompatActivity implements BackProcess
     private void createIntent(long id)
     {
         Intent intent = new Intent();
-        intent.putExtra("key_id", id);
+        intent.putExtra(Constant.keyId, id);
         setResult(RESULT_OK, intent);
 
     }
@@ -206,29 +169,32 @@ public class AddStudentActivity extends AppCompatActivity implements BackProcess
             }
         });
 
-        if(Mode != null && Mode.equals("View"))
+        if(Mode != null && Mode.equals(Constant.view))
         {
             onViewStudent();
         }
 
-        else if(Mode != null && Mode.equals("Edit"))
+        else if(Mode != null && Mode.equals(Constant.edit))
         {
             onEditStudent();
         }
 
         else if(Mode == null)
         {
-            validateNameAndId();
+            addStudent();
         }
     }
 
-    @Override
-    public void getCall(Long x) {
-        id=x;
-        Log.i("awesrtyui",String.valueOf(id));
-    }
-    public void generateDialog(final String operation,
-                               final String roll ,final String name,final String oldRoll)
+    /**
+     * Method to generate dialog to choose one of three options Async Task, Services
+     * and Intent Services
+     * @param operation Add or Edit
+     * @param roll Roll Number of Student
+     * @param name Name of Student
+     * @param oldRoll The Old Roll Number of the Student
+     */
+    public void generateServiceDialog(final String operation,
+                                      final String roll ,final String name,final String oldRoll)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder
                 (AddStudentActivity.this);
@@ -260,14 +226,14 @@ public class AddStudentActivity extends AppCompatActivity implements BackProcess
                         break;
 
                     case 2:
-                         Intent intentStudent = new Intent(AddStudentActivity.this,
-                                 BackgroundIntent.class);
-                         intentStudent.putExtra(Constant.Mode,operation);
-                         intentStudent.putExtra(Constant.Name,name);
-                         intentStudent.putExtra(Constant.RollNo,roll);
-                         intentStudent.putExtra(Constant.oldRollNo,oldRoll);
-                         startService(intentStudent);
-                         finish();
+                        Intent intentStudent = new Intent(AddStudentActivity.this,
+                                BackgroundIntent.class);
+                        intentStudent.putExtra(Constant.Mode,operation);
+                        intentStudent.putExtra(Constant.Name,name);
+                        intentStudent.putExtra(Constant.RollNo,roll);
+                        intentStudent.putExtra(Constant.oldRollNo,oldRoll);
+                        startService(intentStudent);
+                        finish();
                         break;
 
                     default:
@@ -277,6 +243,37 @@ public class AddStudentActivity extends AppCompatActivity implements BackProcess
         });
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    /**
+     * Method to check whether Name and Roll Number Valid or Not
+     * @return true or false
+     */
+    public boolean isNameIdValid()
+    {
+        DatabaseHelper databaseHelper = DatabaseHelper.getInstance(AddStudentActivity.this);
+        boolean flag = true;
+        if(ValidateName.isEmptyName(mEtName.getText().toString()))
+        {
+            flag = false;
+            mEtName.setError(getString(R.string.valid_name_error));
+        }
+        if(ValidateId.isEmptyId(mEtRollNumber.getText().toString())) {
+
+            flag = false;
+            mEtRollNumber.setError(getString(R.string.valid_id_error));
+        }
+        else if(databaseHelper.isExisting(Integer.parseInt(mEtRollNumber.getText().toString())))
+        {
+            flag = false;
+            mEtRollNumber.setError(getString(R.string.unique_roll_msg));
+        }
+        return flag;
+    }
+
+    @Override
+    public void getCall(Long x) {
+        id=x;
     }
 }
 
