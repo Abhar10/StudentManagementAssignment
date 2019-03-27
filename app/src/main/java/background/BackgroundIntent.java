@@ -2,6 +2,7 @@ package background;
 
 import android.app.IntentService;
 import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import android.widget.Toast;
 import android.util.Log;
 
@@ -25,7 +26,7 @@ public class BackgroundIntent extends IntentService {
         if(intent.getStringExtra(Constant.Mode).equals(Constant.addStudent)){
             databaseHelper.insertStudent(Integer.parseInt(intent.getStringExtra(Constant.RollNo)),
                     intent.getStringExtra(Constant.Name));
-            Log.i("Hello","Hello");
+
         }
         else if(intent.getStringExtra(Constant.Mode).equals(Constant.updateStudent))
         {
@@ -33,6 +34,10 @@ public class BackgroundIntent extends IntentService {
                     ,Long.parseLong(intent.getStringExtra(Constant.RollNo)),
                     intent.getStringExtra(Constant.Name));
         }
+        intent.setAction("Broadcast");
+        String echoMessage = "Broadcast Reciever";
+        LocalBroadcastManager.getInstance(getApplicationContext())
+                .sendBroadcast(intent.putExtra("broadcastMessage",echoMessage));
         Toast.makeText(this,getString(R.string.service_msg),Toast.LENGTH_LONG).show();
     }
 

@@ -1,7 +1,11 @@
 package activity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.text.TextWatcher;
 import android.text.Editable;
+import android.widget.Toast;
 
 import background.BackgroundService;
 import com.abhar.sms.R;
@@ -33,6 +38,14 @@ public class AddStudentActivity extends AppCompatActivity implements BackProcess
     private EditText mEtRollNumber;
     private Button mBtnSaveChange;
     private  Long id;
+    private StudentBroadcastReciever mStudentBroadcastReciever = new StudentBroadcastReciever();
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        IntentFilter intentFilter = new IntentFilter(getString(R.string.broadcast));
+        LocalBroadcastManager.getInstance(this).registerReceiver(mStudentBroadcastReciever,intentFilter);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +56,12 @@ public class AddStudentActivity extends AppCompatActivity implements BackProcess
         initialize();
         String Mode = getIntent().getStringExtra(Constant.Mode);
         createTextWatcher(mEtName,Mode);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mStudentBroadcastReciever);
     }
 
     /**
@@ -222,7 +241,6 @@ public class AddStudentActivity extends AppCompatActivity implements BackProcess
                         intent.putExtra(Constant.RollNo,roll);
                         intent.putExtra(Constant.oldRollNo,oldRoll);
                         startService(intent);
-                        finish();
                         break;
 
                     case 2:
@@ -233,7 +251,6 @@ public class AddStudentActivity extends AppCompatActivity implements BackProcess
                         intentStudent.putExtra(Constant.RollNo,roll);
                         intentStudent.putExtra(Constant.oldRollNo,oldRoll);
                         startService(intentStudent);
-                        finish();
                         break;
 
                     default:
@@ -274,6 +291,19 @@ public class AddStudentActivity extends AppCompatActivity implements BackProcess
     @Override
     public void getCall(Long x) {
         id=x;
+    }
+    /**
+     * Broadcast Reciever
+     */
+    public class StudentBroadcastReciever extends BroadcastReceiver
+    {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            finish();
+            Toast.makeText(AddStudentActivity.this,getString(R.string.broadcast_msg),
+                    Toast.LENGTH_LONG).show();
+        }
     }
 }
 

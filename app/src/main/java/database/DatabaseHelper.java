@@ -72,6 +72,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // get readable database as we are not inserting anything
         SQLiteDatabase db = this.getReadableDatabase();
 
+        Student student = new Student();
         Cursor cursor = db.query(Student.TABLE_NAME,
                 new String[]{Student.COLUMN_ROLL_NUMBER, Student.COLUMN_NAME},
                 Student.COLUMN_ROLL_NUMBER + "=?",
@@ -79,12 +80,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         if (cursor != null) {
             cursor.moveToFirst();
+            // prepare note object
+            student = new Student(
+                    cursor.getInt(cursor.getColumnIndex(Student.COLUMN_ROLL_NUMBER)),
+                    cursor.getString(cursor.getColumnIndex(Student.COLUMN_NAME)));
         }
 
-        // prepare note object
-        Student student = new Student(
-                cursor.getInt(cursor.getColumnIndex(Student.COLUMN_ROLL_NUMBER)),
-                cursor.getString(cursor.getColumnIndex(Student.COLUMN_NAME)));
+
 
         // close the db connection
         cursor.close();

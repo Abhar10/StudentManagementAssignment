@@ -30,4 +30,6 @@
     <string name="service_msg">Intent Service Running</string>
     <string name="msg_service">Background Service Running</string>
     <string name="unique_roll_msg">Enter A Unique Roll Number</string>
+    <string name="broadcast_msg">Broadcast Recieved</string>
+    <string name="broadcast">Broadcast</string>
 </resources>

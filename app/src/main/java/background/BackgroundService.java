@@ -3,6 +3,7 @@ package background;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -29,7 +30,6 @@ public class BackgroundService extends Service {
         if(intent.getStringExtra(Constant.Mode).equals(Constant.addStudent)){
             databaseHelper.insertStudent(Integer.parseInt(intent.getStringExtra(Constant.RollNo)),
                     intent.getStringExtra(Constant.Name));
-            Log.i("Hello","Hello");
         }
         else if(intent.getStringExtra(Constant.Mode).equals(Constant.updateStudent))
         {
@@ -37,6 +37,10 @@ public class BackgroundService extends Service {
                     ,Long.parseLong(intent.getStringExtra(Constant.RollNo)),
                     intent.getStringExtra(Constant.Name));
         }
+        intent.setAction("Broadcast");
+        String echoMessage = "Broadcast Reciever";
+        LocalBroadcastManager.getInstance(getApplicationContext())
+                .sendBroadcast(intent.putExtra("broadcastMessage",echoMessage));
         Toast.makeText(this,getString(R.string.msg_service),Toast.LENGTH_LONG).show();
         stopSelf();
         return START_NOT_STICKY;

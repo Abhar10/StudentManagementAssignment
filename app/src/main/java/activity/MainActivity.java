@@ -142,11 +142,11 @@ public class MainActivity extends AppCompatActivity implements BackProcessForLis
         Intent intentView = new Intent(
                 MainActivity.this, AddStudentActivity.class);
 
-        intentView.putExtra("Mode", "View");
+        intentView.putExtra(Constant.Mode, Constant.view);
         intentView.putExtra
-                ("Name", list.get(position).getName());
+                (Constant.Name, list.get(position).getName());
 
-        intentView.putExtra("ID", list.get(position).getRollNo());
+        intentView.putExtra(Constant.Id, list.get(position).getRollNo());
 
         startActivity(intentView);
     }
@@ -160,11 +160,11 @@ public class MainActivity extends AppCompatActivity implements BackProcessForLis
         Intent intentEdit = new Intent(
                 MainActivity.this, AddStudentActivity.class);
 
-        intentEdit.putExtra("Mode", "Edit");
+        intentEdit.putExtra(Constant.Mode, Constant.edit);
         intentEdit.putExtra
-                ("Name", list.get(position).getName());
+                (Constant.Name, list.get(position).getName());
 
-        intentEdit.putExtra("ID", list.get(position).getRollNo());
+        intentEdit.putExtra(Constant.Id, list.get(position).getRollNo());
         startActivityForResult(intentEdit, Constant.REQUEST_CODE_EDIT);
     }
 
@@ -206,7 +206,7 @@ public class MainActivity extends AppCompatActivity implements BackProcessForLis
             {
                 if (resultCode == RESULT_OK) {
                     mStudentView.setVisibility(View.GONE);
-                    long id = data.getLongExtra("key_id",0);
+                    long id = data.getLongExtra(Constant.keyId,0);
                     DatabaseHelper db = DatabaseHelper.getInstance(MainActivity.this);
                     Student student = db.getStudent(id);
                     list.add(student);
