@@ -37,7 +37,7 @@ import com.abhar.android.studentmanagementsqlite.database.model.Student;
  * The MainActivity class implements an application that initially has no students
  * but new students information like Name and Roll Number of Student is displayed here.
  */
-public class MainActivity extends AppCompatActivity implements BackProcessForList.Callback {
+public class StudentActivity extends AppCompatActivity implements BackProcessForList.Callback {
 
     private ArrayList<Student> list = new ArrayList<Student>();
     final GridLayoutManager grid = new GridLayoutManager(this, 1);
@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements BackProcessForLis
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        DatabaseHelper db = DatabaseHelper.getInstance(MainActivity.this);
+        DatabaseHelper db = DatabaseHelper.getInstance(StudentActivity.this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Button btnAddStudent = findViewById(R.id.btn_add_student);
@@ -63,7 +63,7 @@ public class MainActivity extends AppCompatActivity implements BackProcessForLis
         btnAddStudent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, AddStudentActivity.class);
+                Intent intent = new Intent(StudentActivity.this, AddStudentActivity.class);
                 startActivityForResult(intent, Constant.REQUEST_CODE_ADD);
             }
         });
@@ -78,10 +78,10 @@ public class MainActivity extends AppCompatActivity implements BackProcessForLis
         recyclerView.setLayoutManager(grid);
 
         recyclerView.addItemDecoration(new DividerItemDecoration(
-                MainActivity.this, GridLayoutManager.VERTICAL));
+                StudentActivity.this, GridLayoutManager.VERTICAL));
 
         recyclerView.addItemDecoration(new DividerItemDecoration(
-                MainActivity.this, GridLayoutManager.HORIZONTAL));
+                StudentActivity.this, GridLayoutManager.HORIZONTAL));
 
         recyclerView.setAdapter(mAdapter);
     }
@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements BackProcessForLis
             public void onClick(final int position) {
 
                 AlertDialog.Builder builder = new AlertDialog.Builder
-                        (MainActivity.this);
+                        (StudentActivity.this);
                 builder.setTitle(R.string.chooseOptionText);
                 String[] choice = {getString(R.string.viewText),
                         getString(R.string.editText),
@@ -140,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements BackProcessForLis
      */
     private void createViewIntent(int position) {
         Intent intentView = new Intent(
-                MainActivity.this, AddStudentActivity.class);
+                StudentActivity.this, AddStudentActivity.class);
 
         intentView.putExtra(Constant.Mode, Constant.view);
         intentView.putExtra
@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements BackProcessForLis
     private void createEditIntent(int position) {
         setPosition(position);
         Intent intentEdit = new Intent(
-                MainActivity.this, AddStudentActivity.class);
+                StudentActivity.this, AddStudentActivity.class);
 
         intentEdit.putExtra(Constant.Mode, Constant.edit);
         intentEdit.putExtra
@@ -174,17 +174,17 @@ public class MainActivity extends AppCompatActivity implements BackProcessForLis
      * @param position specifies the clicked student
      */
     private void deleteStudent(final int position) {
-        new AlertDialog.Builder(MainActivity.this)
+        new AlertDialog.Builder(StudentActivity.this)
                 .setTitle(R.string.delete_entry)
                 .setMessage(R.string.delete_warning)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        DatabaseHelper db = DatabaseHelper.getInstance(MainActivity.this);
+                        DatabaseHelper db = DatabaseHelper.getInstance(StudentActivity.this);
                         db.deleteNote(list.get(position));
 
-                        BackProcess backprocess = new BackProcess(MainActivity.this);
-                        backprocess.execute("delete_student",
+                        BackProcess backprocess = new BackProcess(StudentActivity.this);
+                        backprocess.execute(getString(R.string.deleteStudent),
                                 String.valueOf(list.get(position).getRollNo()),
                                 list.get(position).getName());
                         list.remove(position);
@@ -207,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements BackProcessForLis
                 if (resultCode == RESULT_OK) {
                     mStudentView.setVisibility(View.GONE);
                     long id = data.getLongExtra(Constant.keyId,0);
-                    DatabaseHelper db = DatabaseHelper.getInstance(MainActivity.this);
+                    DatabaseHelper db = DatabaseHelper.getInstance(StudentActivity.this);
                     Student student = db.getStudent(id);
                     list.add(student);
                     mStudentView.setVisibility(View.GONE);
@@ -217,7 +217,7 @@ public class MainActivity extends AppCompatActivity implements BackProcessForLis
 
         } else if (requestCode == Constant.REQUEST_CODE_EDIT) {
             if (resultCode == RESULT_OK) {
-                DatabaseHelper db = DatabaseHelper.getInstance(MainActivity.this);
+                DatabaseHelper db = DatabaseHelper.getInstance(StudentActivity.this);
                 long id = data.getLongExtra(Constant.keyId,0);
                 list.set(getPosition(), db.getStudent(id));
                 mAdapter.notifyDataSetChanged();

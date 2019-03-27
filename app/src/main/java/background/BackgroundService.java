@@ -37,10 +37,10 @@ public class BackgroundService extends Service {
                     ,Long.parseLong(intent.getStringExtra(Constant.RollNo)),
                     intent.getStringExtra(Constant.Name));
         }
-        intent.setAction("Broadcast");
-        String echoMessage = "Broadcast Reciever";
+        intent.setAction(Constant.broadcast);
+        String echoMessage = Constant.broadcastReciever;
         LocalBroadcastManager.getInstance(getApplicationContext())
-                .sendBroadcast(intent.putExtra("broadcastMessage",echoMessage));
+                .sendBroadcast(intent.putExtra(Constant.broadcastMsg,echoMessage));
         Toast.makeText(this,getString(R.string.msg_service),Toast.LENGTH_LONG).show();
         stopSelf();
         return START_NOT_STICKY;

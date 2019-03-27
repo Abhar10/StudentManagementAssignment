@@ -12,6 +12,9 @@ public class Constant {
     public static final String view = "View";
     public static final String edit = "Edit";
     public static final String keyId = "key_id";
+    public static final String broadcast = "Broadcast";
+    public static final String broadcastReciever = "Broadcast Reciever";
+    public static final String broadcastMsg = "broadcastMessage";
     public static final int REQUEST_CODE_ADD = 1;
     public static final int REQUEST_CODE_EDIT = 2;
     public static final int VIEW = 0;

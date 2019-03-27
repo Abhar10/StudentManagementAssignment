@@ -116,14 +116,28 @@ public class AddStudentActivity extends AppCompatActivity implements BackProcess
             @Override
             public void onClick(View v) {
 
-                boolean flag = isNameIdValid();
-                if(flag) {
+
+                if((Integer.parseInt(mEtRollNumber.getText().toString()) == oldRollNum)
+                            && ! ValidateName.isEmptyName(mEtName.getText().toString()))
+                {
+
                     long roll = Long.parseLong(mEtRollNumber.getText().toString());
                     String name = mEtName.getText().toString();
                     createIntent(roll);
                     generateServiceDialog(Constant.updateStudent,
                             String.valueOf(roll), name, String.valueOf(oldRollNum));
                 }
+                else
+                {
+                    boolean flag = isNameIdValid();
+                    if(flag)
+                    {
+                    long roll = Long.parseLong(mEtRollNumber.getText().toString());
+                    String name = mEtName.getText().toString();
+                    createIntent(roll);
+                    generateServiceDialog(Constant.updateStudent,
+                            String.valueOf(roll), name, String.valueOf(oldRollNum));
+                    }}
             }
         });}
 
