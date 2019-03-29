@@ -9,7 +9,7 @@ import constant.Constant;
 import database.DatabaseHelper;
 import com.abhar.android.studentmanagementsqlite.database.model.Student;
 
-public class BackProcess extends AsyncTask<String,Void, Void>
+public class BackProcess extends AsyncTask<String,Void, String>
 {
 
     Context ctx;
@@ -19,17 +19,14 @@ public class BackProcess extends AsyncTask<String,Void, Void>
         this.callbackFor=callbackFor;
         this.ctx = ctx;
     }
-    public BackProcess(Context ctx)
-    {
-        this.ctx = ctx;
-    }
+
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
     }
 
     @Override
-    protected Void doInBackground(String... params) {
+    protected String doInBackground(String... params) {
 
         String method = params[0];
         DatabaseHelper databaseHelper = DatabaseHelper.getInstance(ctx);
@@ -63,9 +60,10 @@ public class BackProcess extends AsyncTask<String,Void, Void>
             String name = params[2];
             Student student = new Student(rollNum,name);
             databaseHelper.deleteNote(student);
+
         }
 
-        return null;
+        return method;
     }
 
     @Override
@@ -74,12 +72,13 @@ public class BackProcess extends AsyncTask<String,Void, Void>
     }
 
     @Override
-    protected void onPostExecute(Void aLong) {
-        Toast.makeText(ctx,"Async Running",Toast.LENGTH_LONG).show();
+    protected void onPostExecute(String aLong) {
+        callbackFor.getCall(aLong);
+       // Toast.makeText(ctx,aLong,Toast.LENGTH_LONG).show();
     }
 
     @Override
-    protected void onCancelled(Void aVoid) {
+    protected void onCancelled(String aVoid) {
         if(isCancelled())
         {
             cancel(true);
@@ -89,7 +88,7 @@ public class BackProcess extends AsyncTask<String,Void, Void>
 
     public interface CallbackFor{
 
-        void getCall(Long x);
+       void getCall(String x);
 
     }
 }

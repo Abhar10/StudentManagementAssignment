@@ -242,9 +242,8 @@ public class AddStudentActivity extends AppCompatActivity implements BackProcess
             {
                 switch (which) {
                     case 0:
-                        (new BackProcess(AddStudentActivity.this))
+                        (new BackProcess(AddStudentActivity.this,AddStudentActivity.this))
                                 .execute(operation, roll, name,oldRoll);
-                        finish();
                         break;
 
                     case 1:
@@ -302,10 +301,14 @@ public class AddStudentActivity extends AppCompatActivity implements BackProcess
         return flag;
     }
 
+
+
     @Override
-    public void getCall(Long x) {
-        id=x;
+    public void getCall(String x) {
+        Toast.makeText(this,x,Toast.LENGTH_LONG).show();
+        finish();
     }
+
     /**
      * Broadcast Reciever
      */

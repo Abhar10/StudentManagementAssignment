@@ -16,6 +16,8 @@ import android.view.View;
 import android.content.Intent;
 import android.widget.LinearLayout;
 import android.util.Log;
+import android.widget.Toast;
+
 import com.abhar.sms.R;
 
 import async.BackProcess;
@@ -37,7 +39,7 @@ import com.abhar.android.studentmanagementsqlite.database.model.Student;
  * The MainActivity class implements an application that initially has no students
  * but new students information like Name and Roll Number of Student is displayed here.
  */
-public class StudentActivity extends AppCompatActivity implements BackProcessForList.Callback {
+public class StudentActivity extends AppCompatActivity implements BackProcessForList.Callback, BackProcess.CallbackFor {
 
     private ArrayList<Student> list = new ArrayList<Student>();
     final GridLayoutManager grid = new GridLayoutManager(this, 1);
@@ -183,7 +185,7 @@ public class StudentActivity extends AppCompatActivity implements BackProcessFor
                         DatabaseHelper db = DatabaseHelper.getInstance(StudentActivity.this);
                         db.deleteNote(list.get(position));
 
-                        BackProcess backprocess = new BackProcess(StudentActivity.this);
+                        BackProcess backprocess = new BackProcess(StudentActivity.this,StudentActivity.this);
                         backprocess.execute(Constant.deleteStudent,
                                 String.valueOf(list.get(position).getRollNo()),
                                 list.get(position).getName());
@@ -309,6 +311,11 @@ public class StudentActivity extends AppCompatActivity implements BackProcessFor
     public void getOutput(ArrayList<Student> out) {
         list=out;
         mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void getCall(String x) {
+        Toast.makeText(this,x,Toast.LENGTH_LONG);
     }
 }
 
