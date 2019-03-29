@@ -34,6 +34,10 @@ public class BackProcess extends AsyncTask<String,Void, Void>
         String method = params[0];
         DatabaseHelper databaseHelper = DatabaseHelper.getInstance(ctx);
         //If Insertion Taking Place
+        if(isCancelled())
+        {
+            return null;
+        }
         if(method.equals(Constant.addStudent))
         {
             int roll_no =Integer.parseInt(params[1]);
@@ -72,6 +76,15 @@ public class BackProcess extends AsyncTask<String,Void, Void>
     @Override
     protected void onPostExecute(Void aLong) {
         Toast.makeText(ctx,"Async Running",Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    protected void onCancelled(Void aVoid) {
+        if(isCancelled())
+        {
+            cancel(true);
+        }
+        super.onCancelled(aVoid);
     }
 
     public interface CallbackFor{

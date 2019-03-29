@@ -184,7 +184,7 @@ public class StudentActivity extends AppCompatActivity implements BackProcessFor
                         db.deleteNote(list.get(position));
 
                         BackProcess backprocess = new BackProcess(StudentActivity.this);
-                        backprocess.execute(getString(R.string.deleteStudent),
+                        backprocess.execute(Constant.deleteStudent,
                                 String.valueOf(list.get(position).getRollNo()),
                                 list.get(position).getName());
                         list.remove(position);
